@@ -8,7 +8,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { OrderItem } from '@/models/types';
-import { ShoppingCart, Trash2, Send } from 'lucide-react';
+import { ShoppingCart, Trash2, Send, ChevronUp, ChevronDown, Plus, Minus } from 'lucide-react';
 
 interface OrderCartProps {
   items: OrderItem[];
@@ -49,27 +49,47 @@ const OrderCart: React.FC<OrderCartProps> = ({
           )}
         </Button>
       </SheetTrigger>
-      <SheetContent className="sm:max-w-md w-[90vw]">
-        <SheetHeader>
-          <SheetTitle>Your Order</SheetTitle>
+      <SheetContent className="sm:max-w-md w-[90vw] bg-[#fefaf3]">
+        <SheetHeader className="text-left">
+          <SheetTitle className="text-xl font-bold">Your Order</SheetTitle>
           <SheetDescription>
             Review your items before placing the order
           </SheetDescription>
         </SheetHeader>
         
-        <div className="mt-4 mb-2">
-          <Label htmlFor="tableNumber">Table Number</Label>
-          <Input
-            id="tableNumber"
-            type="number"
-            value={tableNumber}
-            onChange={(e) => onTableNumberChange(parseInt(e.target.value) || 1)}
-            min={1}
-            className="mt-1"
-          />
+        <div className="mt-6 mb-2">
+          <Label htmlFor="tableNumber" className="text-base font-semibold">Table Number</Label>
+          <div className="relative mt-2">
+            <Input
+              id="tableNumber"
+              type="number"
+              value={tableNumber}
+              onChange={(e) => onTableNumberChange(parseInt(e.target.value) || 1)}
+              min={1}
+              className="pr-12 py-5 text-lg border-amber-300 rounded-lg"
+            />
+            <div className="absolute right-0 top-0 h-full flex flex-col border-l border-amber-300">
+              <Button 
+                type="button" 
+                variant="ghost" 
+                className="h-1/2 px-3 text-gray-500 hover:text-gray-700"
+                onClick={() => onTableNumberChange(tableNumber + 1)}
+              >
+                <ChevronUp className="h-4 w-4" />
+              </Button>
+              <Button 
+                type="button" 
+                variant="ghost" 
+                className="h-1/2 px-3 text-gray-500 hover:text-gray-700 border-t border-amber-300"
+                onClick={() => onTableNumberChange(Math.max(1, tableNumber - 1))}
+              >
+                <ChevronDown className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
         </div>
         
-        <Separator className="my-4" />
+        <Separator className="my-6" />
         
         {items.length === 0 ? (
           <div className="py-8 text-center text-gray-500">
@@ -77,56 +97,60 @@ const OrderCart: React.FC<OrderCartProps> = ({
           </div>
         ) : (
           <>
-            <ScrollArea className="h-[60vh] pr-4">
+            <ScrollArea className="h-[calc(60vh-200px)] pr-4">
               <div className="space-y-4">
                 {items.map((item) => (
-                  <div key={item.id} className="border rounded-lg p-3">
+                  <div key={item.id} className="border border-amber-200 rounded-lg p-4 bg-white">
                     <div className="flex justify-between items-start">
                       <div>
-                        <div className="font-semibold">{item.menuItem.name}</div>
+                        <div className="font-semibold text-lg">{item.menuItem.name}</div>
                         <div className="text-sm text-gray-500">
                           ${item.menuItem.price.toFixed(2)} x {item.quantity}
                         </div>
                       </div>
-                      <div className="font-semibold">
+                      <div className="font-semibold text-lg">
                         ${(item.menuItem.price * item.quantity).toFixed(2)}
                       </div>
                     </div>
                     
-                    <div className="mt-2 flex items-center">
-                      <Button 
-                        variant="outline" 
-                        size="icon" 
-                        className="h-7 w-7"
-                        onClick={() => onUpdateQuantity(item.id, Math.max(1, item.quantity - 1))}
-                      >
-                        -
-                      </Button>
-                      <span className="mx-2">{item.quantity}</span>
-                      <Button 
-                        variant="outline" 
-                        size="icon" 
-                        className="h-7 w-7"
-                        onClick={() => onUpdateQuantity(item.id, item.quantity + 1)}
-                      >
-                        +
-                      </Button>
+                    <div className="mt-3 flex items-center justify-between">
+                      <div className="flex items-center border border-gray-300 rounded-md">
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          className="h-8 px-3 text-gray-700 hover:bg-gray-100 rounded-none rounded-l-md"
+                          onClick={() => onUpdateQuantity(item.id, Math.max(1, item.quantity - 1))}
+                        >
+                          <Minus className="h-4 w-4" />
+                        </Button>
+                        <span className="px-3 h-8 flex items-center justify-center border-x border-gray-300 min-w-[40px]">
+                          {item.quantity}
+                        </span>
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          className="h-8 px-3 text-gray-700 hover:bg-gray-100 rounded-none rounded-r-md"
+                          onClick={() => onUpdateQuantity(item.id, item.quantity + 1)}
+                        >
+                          <Plus className="h-4 w-4" />
+                        </Button>
+                      </div>
                       <Button 
                         variant="ghost" 
-                        size="icon" 
-                        className="ml-auto h-7 w-7 text-red-500"
+                        size="sm"
+                        className="text-red-500 hover:text-red-700 hover:bg-red-50"
                         onClick={() => onRemoveItem(item.id)}
                       >
-                        <Trash2 className="h-4 w-4" />
+                        <Trash2 className="h-5 w-5" />
                       </Button>
                     </div>
                     
-                    <div className="mt-2">
+                    <div className="mt-3">
                       <Input
                         placeholder="Add special instructions..."
                         value={item.notes || ''}
                         onChange={(e) => onAddNote(item.id, e.target.value)}
-                        className="text-sm"
+                        className="text-sm border-amber-200 bg-amber-50/50 text-gray-600 py-5"
                       />
                     </div>
                   </div>
@@ -134,28 +158,29 @@ const OrderCart: React.FC<OrderCartProps> = ({
               </div>
             </ScrollArea>
             
-            <Separator className="my-4" />
+            <Separator className="my-6" />
             
             <div>
-              <div className="flex justify-between font-semibold">
+              <div className="flex justify-between font-semibold text-lg mb-2">
                 <span>Subtotal</span>
                 <span>${totalPrice.toFixed(2)}</span>
               </div>
-              <div className="flex justify-between text-sm text-gray-500 mt-1">
+              <div className="flex justify-between text-gray-600 mb-2">
                 <span>Tax</span>
                 <span>${(totalPrice * 0.1).toFixed(2)}</span>
               </div>
-              <div className="flex justify-between font-bold text-lg mt-2">
+              <Separator className="my-4" />
+              <div className="flex justify-between font-bold text-xl mb-6">
                 <span>Total</span>
                 <span>${(totalPrice * 1.1).toFixed(2)}</span>
               </div>
               
               <Button 
-                className="w-full mt-4 button-primary py-6"
+                className="w-full button-primary py-6 text-base"
                 onClick={handleSubmitOrder}
                 disabled={items.length === 0 || tableNumber <= 0}
               >
-                <Send className="mr-2 h-4 w-4" />
+                <Send className="mr-2 h-5 w-5" />
                 Place Order
               </Button>
             </div>
