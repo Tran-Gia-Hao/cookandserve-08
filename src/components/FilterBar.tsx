@@ -65,14 +65,14 @@ const FilterBar: React.FC<FilterBarProps> = ({
       </Select>
       
       <Select
-        value={selectedTable?.toString() || ''}
-        onValueChange={(value) => onTableFilter(value ? parseInt(value) : null)}
+        value={selectedTable?.toString() || 'all'}
+        onValueChange={(value) => onTableFilter(value === 'all' ? null : parseInt(value))}
       >
         <SelectTrigger className="w-full sm:w-[150px]">
           <SelectValue placeholder="Filter by table" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="">All Tables</SelectItem>
+          <SelectItem value="all">All Tables</SelectItem>
           {tableOptions.map((option) => (
             <SelectItem key={option.value} value={option.value.toString()}>
               {option.label}
