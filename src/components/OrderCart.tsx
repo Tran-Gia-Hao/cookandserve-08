@@ -32,6 +32,11 @@ const OrderCart: React.FC<OrderCartProps> = ({
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
   const totalPrice = items.reduce((sum, item) => sum + (item.menuItem.price * item.quantity), 0);
 
+  const handleSubmitOrder = () => {
+    if (items.length === 0 || tableNumber <= 0) return;
+    onSubmitOrder();
+  };
+
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -147,7 +152,7 @@ const OrderCart: React.FC<OrderCartProps> = ({
               
               <Button 
                 className="w-full mt-4 button-primary py-6"
-                onClick={onSubmitOrder}
+                onClick={handleSubmitOrder}
                 disabled={items.length === 0 || tableNumber <= 0}
               >
                 <Send className="mr-2 h-4 w-4" />
