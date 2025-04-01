@@ -1,78 +1,79 @@
-import { MenuItem, Order, OrderItem, Staff, DailySummary, ItemStatus, OrderStatus } from '../models/types';
+
+import { MenuItem, Order, OrderItem, Staff, DailySummary } from '../models/types';
 import { v4 as uuidv4 } from 'uuid';
 
 // Menu Items
 export const menuItems: MenuItem[] = [
   {
     id: uuidv4(),
-    name: 'Beef Steak',
-    description: 'Tender beef steak grilled to perfection',
-    price: 25.99,
+    name: 'Mongolian Beef',
+    description: 'Tender slices of beef stir-fried with scallions in a savory sauce',
+    price: 18.95,
     category: 'Main',
-    image: 'https://images.unsplash.com/photo-1600891964092-4316c288032e?ixlib=rb-4.0.3',
+    image: 'https://images.unsplash.com/photo-1512838243191-e81e8f66f1fd?ixlib=rb-4.0.3',
     available: true
   },
   {
     id: uuidv4(),
-    name: 'Caesar Salad',
-    description: 'Fresh romaine lettuce with caesar dressing and croutons',
-    price: 12.99,
+    name: 'Spring Rolls (4)',
+    description: 'Crispy vegetable spring rolls served with sweet chili sauce',
+    price: 7.95,
     category: 'Starter',
-    image: 'https://images.unsplash.com/photo-1550304943-4f24f54ddde9?ixlib=rb-4.0.3',
+    image: 'https://images.unsplash.com/photo-1559018750-d3643b5a73f0?ixlib=rb-4.0.3',
     available: true
   },
   {
     id: uuidv4(),
-    name: 'Pasta Carbonara',
-    description: 'Creamy pasta with bacon and parmesan cheese',
-    price: 18.99,
+    name: 'General Tso\'s Chicken',
+    description: 'Crispy chicken pieces tossed in a sweet and spicy sauce',
+    price: 16.95,
     category: 'Main',
-    image: 'https://images.unsplash.com/photo-1612874742237-6526221588e3?ixlib=rb-4.0.3',
+    image: 'https://images.unsplash.com/photo-1525755662778-989d0524087e?ixlib=rb-4.0.3',
     available: true
   },
   {
     id: uuidv4(),
-    name: 'Mushroom Risotto',
-    description: 'Creamy risotto with wild mushrooms',
-    price: 16.99,
+    name: 'Vegetable Lo Mein',
+    description: 'Stir-fried noodles with mixed vegetables in a savory sauce',
+    price: 14.95,
     category: 'Main',
-    image: 'https://images.unsplash.com/photo-1534766438357-2b9ef4077e3d?ixlib=rb-4.0.3',
+    image: 'https://images.unsplash.com/photo-1619380061814-58f03707f082?ixlib=rb-4.0.3',
     available: true
   },
   {
     id: uuidv4(),
-    name: 'Tiramisu',
-    description: 'Classic Italian dessert with coffee and mascarpone',
-    price: 8.99,
+    name: 'Mango Pudding',
+    description: 'Creamy mango-flavored pudding with fresh fruit',
+    price: 6.95,
     category: 'Dessert',
-    image: 'https://images.unsplash.com/photo-1571877227200-a0d98ea2456d?ixlib=rb-4.0.3',
+    image: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?ixlib=rb-4.0.3',
     available: true
   },
   {
     id: uuidv4(),
-    name: 'Garlic Bread',
-    description: 'Toasted bread with garlic butter',
-    price: 5.99,
+    name: 'Crab Rangoon (6)',
+    description: 'Crispy wontons filled with cream cheese and crab meat',
+    price: 8.95,
     category: 'Side',
-    image: 'https://images.unsplash.com/photo-1573140247632-f8fd74997d5c?ixlib=rb-4.0.3',
+    image: 'https://images.unsplash.com/photo-1548811256-1623d885b0f7?ixlib=rb-4.0.3',
     available: true
   },
   {
     id: uuidv4(),
-    name: 'Fish & Chips',
-    description: 'Crispy fried fish with french fries',
-    price: 19.99,
+    name: 'Kung Pao Shrimp',
+    description: 'Stir-fried shrimp with peanuts, vegetables, and chili peppers',
+    price: 19.95,
     category: 'Main',
-    image: 'https://images.unsplash.com/photo-1576777489921-c93ea5080243?ixlib=rb-4.0.3',
+    image: 'https://images.unsplash.com/photo-1603133872878-684f208fb84b?ixlib=rb-4.0.3',
     available: true
   },
   {
     id: uuidv4(),
-    name: 'Chocolate Cake',
-    description: 'Rich chocolate cake with chocolate ganache',
-    price: 7.99,
+    name: 'Fried Ice Cream',
+    description: 'Vanilla ice cream wrapped in crispy coating, served with honey',
+    price: 7.95,
     category: 'Dessert',
-    image: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?ixlib=rb-4.0.3',
+    image: 'https://images.unsplash.com/photo-1528252094031-4d3392f4e2d7?ixlib=rb-4.0.3',
     available: true
   },
 ];

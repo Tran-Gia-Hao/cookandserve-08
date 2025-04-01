@@ -24,23 +24,21 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
   inOrder = false 
 }) => {
   return (
-    <Card className="menu-item overflow-hidden h-full flex flex-col">
+    <Card className="menu-item overflow-hidden h-full flex flex-col shadow-md hover:shadow-lg transition-shadow">
       {item.image && (
-        <div className="w-full h-40 overflow-hidden">
+        <div className="w-full h-48 overflow-hidden relative">
           <img 
             src={item.image} 
             alt={item.name} 
-            className="w-full h-full object-cover transition-transform hover:scale-105"
+            className="w-full h-full object-cover transition-transform hover:scale-105 duration-300"
           />
-        </div>
-      )}
-      <CardHeader className="pb-2">
-        <div className="flex justify-between items-start">
-          <CardTitle className="text-lg">{item.name}</CardTitle>
-          <Badge variant="outline" className="bg-restaurant-accent text-restaurant-dark font-semibold">
+          <Badge variant="secondary" className="absolute top-3 right-3 bg-amber-500 text-white font-bold px-3 py-1 rounded-full">
             ${item.price.toFixed(2)}
           </Badge>
         </div>
+      )}
+      <CardHeader className="pb-2">
+        <CardTitle className="text-lg font-bold text-amber-800">{item.name}</CardTitle>
         <CardDescription className="text-sm text-gray-600 line-clamp-2">
           {item.description}
         </CardDescription>
@@ -60,6 +58,7 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
               size="icon" 
               onClick={onDecrease}
               disabled={!item.available || quantity <= 0}
+              className="text-amber-700 border-amber-300 hover:bg-amber-50"
             >
               <MinusCircle className="h-4 w-4" />
             </Button>
@@ -69,6 +68,7 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
               size="icon" 
               onClick={onIncrease}
               disabled={!item.available}
+              className="text-amber-700 border-amber-300 hover:bg-amber-50"
             >
               <PlusCircle className="h-4 w-4" />
             </Button>
@@ -76,7 +76,7 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
         ) : (
           <Button 
             onClick={() => onAddToOrder(item)} 
-            className="w-full button-primary" 
+            className="w-full bg-amber-500 hover:bg-amber-600 text-white" 
             disabled={!item.available}
           >
             Add to Order
