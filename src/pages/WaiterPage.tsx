@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -105,6 +104,11 @@ const WaiterPage = () => {
     });
   };
 
+  // Adapter function to make handleUpdateOrderStatus compatible with OrderCard
+  const handleOrderCardStatusChange = (order: Order, newStatus: OrderStatus) => {
+    handleUpdateOrderStatus(order.id, newStatus);
+  };
+
   return (
     <div className="min-h-screen bg-restaurant-light">
       <header className="bg-white shadow-sm">
@@ -164,7 +168,7 @@ const WaiterPage = () => {
                     key={order.id}
                     order={order}
                     onViewDetails={handleViewDetails}
-                    onStatusChange={handleUpdateOrderStatus}
+                    onStatusChange={handleOrderCardStatusChange}
                     showActions={true}
                   />
                 ))}

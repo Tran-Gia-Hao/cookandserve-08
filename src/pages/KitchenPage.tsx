@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from 'react-router-dom';
 import { ArrowLeft, ChefHat, Clock } from 'lucide-react';
@@ -113,6 +114,11 @@ const KitchenPage = () => {
     }
   };
 
+  // Adapter function to make handleUpdateOrderStatus compatible with OrderCard
+  const handleOrderCardStatusChange = (order: Order, newStatus: OrderStatus) => {
+    handleUpdateOrderStatus(order.id, newStatus);
+  };
+
   return (
     <div className="min-h-screen bg-restaurant-light">
       <header className="bg-white shadow-sm">
@@ -158,7 +164,7 @@ const KitchenPage = () => {
                 key={order.id}
                 order={order}
                 onViewDetails={handleViewDetails}
-                onStatusChange={handleUpdateOrderStatus}
+                onStatusChange={handleOrderCardStatusChange}
                 showActions={true}
               />
             ))}
