@@ -6,73 +6,73 @@ import { v4 as uuidv4 } from 'uuid';
 export const menuItems: MenuItem[] = [
   {
     id: uuidv4(),
-    name: 'Mongolian Beef',
-    description: 'Tender slices of beef stir-fried with scallions in a savory sauce',
-    price: 18.95,
-    category: 'Main',
-    image: 'https://images.unsplash.com/photo-1512838243191-e81e8f66f1fd?ixlib=rb-4.0.3',
+    name: 'Phở Bò Tái',
+    description: 'Phở với thịt bò tái mỏng, hành và các loại gia vị tươi',
+    price: 95000,
+    category: 'Món Chính',
+    image: 'https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?ixlib=rb-4.0.3',
     available: true
   },
   {
     id: uuidv4(),
-    name: 'Spring Rolls (4)',
-    description: 'Crispy vegetable spring rolls served with sweet chili sauce',
-    price: 7.95,
-    category: 'Starter',
+    name: 'Chả Giò (4 cuốn)',
+    description: 'Chả giò giòn rụm với nhân thịt và rau củ, ăn kèm với nước mắm chua ngọt',
+    price: 65000,
+    category: 'Khai Vị',
     image: 'https://images.unsplash.com/photo-1559018750-d3643b5a73f0?ixlib=rb-4.0.3',
     available: true
   },
   {
     id: uuidv4(),
-    name: 'General Tso\'s Chicken',
-    description: 'Crispy chicken pieces tossed in a sweet and spicy sauce',
-    price: 16.95,
-    category: 'Main',
-    image: 'https://images.unsplash.com/photo-1525755662778-989d0524087e?ixlib=rb-4.0.3',
+    name: 'Cơm Tấm Sườn',
+    description: 'Cơm tấm với sườn nướng, trứng ốp la và đồ chua',
+    price: 85000,
+    category: 'Món Chính',
+    image: 'https://images.unsplash.com/photo-1569058242253-92a9c755a0ec?ixlib=rb-4.0.3',
     available: true
   },
   {
     id: uuidv4(),
-    name: 'Vegetable Lo Mein',
-    description: 'Stir-fried noodles with mixed vegetables in a savory sauce',
-    price: 14.95,
-    category: 'Main',
-    image: 'https://images.unsplash.com/photo-1619380061814-58f03707f082?ixlib=rb-4.0.3',
+    name: 'Bún Chả',
+    description: 'Bún với thịt viên và thịt heo nướng, nước chấm chua ngọt và rau sống',
+    price: 78000,
+    category: 'Món Chính',
+    image: 'https://images.unsplash.com/photo-1627476226547-9e36d61fa8ac?ixlib=rb-4.0.3',
     available: true
   },
   {
     id: uuidv4(),
-    name: 'Mango Pudding',
-    description: 'Creamy mango-flavored pudding with fresh fruit',
-    price: 6.95,
-    category: 'Dessert',
-    image: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?ixlib=rb-4.0.3',
+    name: 'Chè Ba Màu',
+    description: 'Chè ngọt với đậu đỏ, đậu xanh và thạch đen, nước cốt dừa',
+    price: 45000,
+    category: 'Tráng Miệng',
+    image: 'https://images.unsplash.com/photo-1567157577867-05ccb1388e66?ixlib=rb-4.0.3',
     available: true
   },
   {
     id: uuidv4(),
-    name: 'Crab Rangoon (6)',
-    description: 'Crispy wontons filled with cream cheese and crab meat',
-    price: 8.95,
-    category: 'Side',
-    image: 'https://images.unsplash.com/photo-1548811256-1623d885b0f7?ixlib=rb-4.0.3',
+    name: 'Gỏi Cuốn (6 cuốn)',
+    description: 'Gỏi cuốn tươi với tôm, thịt heo, bún, rau sống và nước mắm',
+    price: 70000,
+    category: 'Khai Vị',
+    image: 'https://images.unsplash.com/photo-1548809542-17526d30f341?ixlib=rb-4.0.3',
     available: true
   },
   {
     id: uuidv4(),
-    name: 'Kung Pao Shrimp',
-    description: 'Stir-fried shrimp with peanuts, vegetables, and chili peppers',
-    price: 19.95,
-    category: 'Main',
-    image: 'https://images.unsplash.com/photo-1603133872878-684f208fb84b?ixlib=rb-4.0.3',
+    name: 'Cá Kho Tộ',
+    description: 'Cá kho trong tộ đất với nước mắm, đường thốt nốt và tiêu',
+    price: 120000,
+    category: 'Món Chính',
+    image: 'https://images.unsplash.com/photo-1518980200453-9dde53dc3363?ixlib=rb-4.0.3',
     available: true
   },
   {
     id: uuidv4(),
-    name: 'Fried Ice Cream',
-    description: 'Vanilla ice cream wrapped in crispy coating, served with honey',
-    price: 7.95,
-    category: 'Dessert',
+    name: 'Bánh Flan',
+    description: 'Bánh flan mềm mịn với nước caramel thơm ngậy',
+    price: 35000,
+    category: 'Tráng Miệng',
     image: 'https://images.unsplash.com/photo-1528252094031-4d3392f4e2d7?ixlib=rb-4.0.3',
     available: true
   },
@@ -80,9 +80,9 @@ export const menuItems: MenuItem[] = [
 
 // Staff
 export const staff: Staff[] = [
-  { id: uuidv4(), name: 'John Doe', role: 'waiter' },
-  { id: uuidv4(), name: 'Jane Smith', role: 'kitchen' },
-  { id: uuidv4(), name: 'Michael Johnson', role: 'manager' },
+  { id: uuidv4(), name: 'Nguyễn Văn A', role: 'waiter' },
+  { id: uuidv4(), name: 'Trần Thị B', role: 'kitchen' },
+  { id: uuidv4(), name: 'Phạm Văn C', role: 'manager' },
 ];
 
 // Generate mock orders
@@ -137,8 +137,8 @@ export const mockOrders = generateMockOrders(10);
 export const mockDailySummary: DailySummary = {
   date: new Date().toISOString().slice(0, 10),
   totalOrders: 42,
-  totalRevenue: 1285.75,
-  averageOrderValue: 30.61,
+  totalRevenue: 3750000,
+  averageOrderValue: 89200,
   popularItems: [
     { itemId: menuItems[0].id, name: menuItems[0].name, count: 18 },
     { itemId: menuItems[2].id, name: menuItems[2].name, count: 15 },
@@ -148,7 +148,7 @@ export const mockDailySummary: DailySummary = {
 
 // Mock weekly data for charts
 export const mockWeeklyData = {
-  labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-  revenue: [980, 1200, 860, 1100, 1500, 1800, 1400],
+  labels: ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'CN'],
+  revenue: [2500000, 3200000, 2700000, 3000000, 3800000, 4200000, 3600000],
   orders: [32, 38, 30, 35, 46, 52, 42]
 };

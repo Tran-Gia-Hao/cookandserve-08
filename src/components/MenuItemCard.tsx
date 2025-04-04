@@ -23,6 +23,11 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
   onDecrease,
   inOrder = false 
 }) => {
+  // Format price in VND format
+  const formatPrice = (price: number) => {
+    return price.toLocaleString('vi-VN') + ' ₫';
+  };
+
   return (
     <Card className="menu-item overflow-hidden h-full flex flex-col shadow-md hover:shadow-lg transition-shadow">
       {item.image && (
@@ -33,7 +38,7 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
             className="w-full h-full object-cover transition-transform hover:scale-105 duration-300"
           />
           <Badge variant="secondary" className="absolute top-3 right-3 bg-amber-500 text-white font-bold px-3 py-1 rounded-full">
-            ${item.price.toFixed(2)}
+            {formatPrice(item.price)}
           </Badge>
         </div>
       )}
@@ -46,7 +51,7 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
       <CardContent className="py-0 flex-grow">
         {!item.available && (
           <Badge variant="destructive" className="mt-2">
-            Not Available
+            Hết hàng
           </Badge>
         )}
       </CardContent>
@@ -79,7 +84,7 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
             className="w-full bg-amber-500 hover:bg-amber-600 text-white" 
             disabled={!item.available}
           >
-            Add to Order
+            Thêm vào giỏ
           </Button>
         )}
       </CardFooter>
