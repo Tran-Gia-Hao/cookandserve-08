@@ -1,3 +1,4 @@
+
 import { MenuItem, Order, OrderItem, Staff, DailySummary, OrderStatus, ItemStatus } from '../models/types';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -9,16 +10,16 @@ export const menuItems: MenuItem[] = [
     description: 'Sushi được phủ lớp cá hồi tươi ngon trên nền cơm trắng mịn, cuốn rong biển',
     price: 35000,
     category: 'Sushi & Sashimi',
-    image: 'https://images.unsplash.com/photo-1579871494447-9811cf80d66c?ixlib=rb-4.0.3',
+    image: 'https://manwah.com.vn/wp-content/uploads/2019/04/3-sushi-buffet.jpg',
     available: true
   },
   {
     id: uuidv4(),
-    name: 'Cánh Gà Nướng BBQ',
-    description: 'Cánh gà tẩm ướp gia vị đặc biệt, nướng trên bếp than hoa thơm nức',
-    price: 65000,
+    name: 'Bò Mỹ Nướng BBQ',
+    description: 'Bò Mỹ thượng hạng được tẩm ướp và nướng trên than hồng, thơm ngọt đặc trưng',
+    price: 95000,
     category: 'BBQ',
-    image: 'https://images.unsplash.com/photo-1527477396000-e27163b481c2?ixlib=rb-4.0.3',
+    image: 'https://manwah.com.vn/wp-content/uploads/2019/03/bbq-buffet-lau-nuong.jpg',
     available: true
   },
   {
@@ -27,16 +28,16 @@ export const menuItems: MenuItem[] = [
     description: 'Nước lẩu Thái chua cay đặc trưng với hương vị đậm đà, hấp dẫn',
     price: 120000,
     category: 'Lẩu',
-    image: 'https://images.unsplash.com/photo-1563245372-f21724e3856d?ixlib=rb-4.0.3',
+    image: 'https://manwah.com.vn/wp-content/uploads/2021/11/lau-dam-duong.jpg',
     available: true
   },
   {
     id: uuidv4(),
-    name: 'Bò Nướng Lá Lốt',
-    description: 'Thịt bò xay cuộn trong lá lốt thơm nức, nướng than hoa đặc sắc',
+    name: 'Sashimi Cá Hồi',
+    description: 'Cá hồi tươi ngon được thái lát mỏng, phục vụ với gừng và wasabi',
     price: 85000,
-    category: 'BBQ',
-    image: 'https://images.unsplash.com/photo-1544025162-d76694265947?ixlib=rb-4.0.3',
+    category: 'Sushi & Sashimi',
+    image: 'https://manwah.com.vn/wp-content/uploads/2019/04/sashimi-buffet-sushi.jpg',
     available: true
   },
   {
@@ -45,16 +46,7 @@ export const menuItems: MenuItem[] = [
     description: 'Tôm sú tươi nướng với muối ớt đặc biệt của nhà hàng',
     price: 95000,
     category: 'Hải Sản',
-    image: 'https://images.unsplash.com/photo-1565557623262-b51c2513a641?ixlib=rb-4.0.3',
-    available: true
-  },
-  {
-    id: uuidv4(),
-    name: 'Kimbap Rong Biển',
-    description: 'Cơm cuộn với rong biển, trứng, dưa leo và các loại rau',
-    price: 45000,
-    category: 'Món Hàn',
-    image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3',
+    image: 'https://manwah.com.vn/wp-content/uploads/2019/04/tom-su-nuong-buffet.jpg',
     available: true
   },
   {
@@ -63,7 +55,25 @@ export const menuItems: MenuItem[] = [
     description: 'Lẩu kimchi cay nồng đặc trưng ẩm thực Hàn Quốc tại Manwah',
     price: 150000,
     category: 'Lẩu',
-    image: 'https://images.unsplash.com/photo-1574484284002-952d92456975?ixlib=rb-4.0.3',
+    image: 'https://manwah.com.vn/wp-content/uploads/2019/04/lau-kim-chi-buffet-lau-nuong.jpg',
+    available: true
+  },
+  {
+    id: uuidv4(),
+    name: 'Cánh Gà Nướng BBQ',
+    description: 'Cánh gà tẩm ướp gia vị đặc biệt, nướng trên bếp than hoa thơm nức',
+    price: 65000,
+    category: 'BBQ',
+    image: 'https://manwah.com.vn/wp-content/uploads/2019/04/canh-ga-nuong.jpg',
+    available: true
+  },
+  {
+    id: uuidv4(),
+    name: 'Sườn Nướng BBQ',
+    description: 'Sườn heo tươi ngon được tẩm ướp và nướng trên bếp than hồng',
+    price: 85000,
+    category: 'BBQ',
+    image: 'https://manwah.com.vn/wp-content/uploads/2019/03/suon-nuong.jpg',
     available: true
   }
 ];

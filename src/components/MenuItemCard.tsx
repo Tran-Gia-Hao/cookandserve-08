@@ -36,6 +36,7 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
             src={item.image} 
             alt={item.name} 
             className="w-full h-full object-cover transition-transform hover:scale-105 duration-300"
+            loading="lazy"
           />
           <Badge variant="secondary" className="absolute top-3 right-3 bg-amber-500 text-white font-bold px-3 py-1 rounded-full">
             {formatPrice(item.price)}
