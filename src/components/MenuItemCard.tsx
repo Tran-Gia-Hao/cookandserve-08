@@ -1,10 +1,11 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { PlusCircle, MinusCircle } from 'lucide-react';
 import { MenuItem } from '@/models/types';
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface MenuItemCardProps {
   item: MenuItem;
@@ -23,20 +24,37 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
   onDecrease,
   inOrder = false 
 }) => {
+  const [imageError, setImageError] = useState(false);
+  const [imageLoading, setImageLoading] = useState(true);
+
   // Format price in VND format
   const formatPrice = (price: number) => {
     return price.toLocaleString('vi-VN') + ' ₫';
+  };
+
+  const handleImageError = () => {
+    setImageError(true);
+    setImageLoading(false);
+  };
+
+  const handleImageLoad = () => {
+    setImageLoading(false);
   };
 
   return (
     <Card className="menu-item overflow-hidden h-full flex flex-col shadow-md hover:shadow-lg transition-shadow">
       {item.image && (
         <div className="w-full h-48 overflow-hidden relative">
+          {imageLoading && (
+            <Skeleton className="w-full h-full absolute inset-0" />
+          )}
           <img 
-            src={item.image} 
+            src={imageError ? `https://images.unsplash.com/photo-${item.fallbackImage || '1546069901-ba9599a7e63c'}?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60` : item.image}
             alt={item.name} 
-            className="w-full h-full object-cover transition-transform hover:scale-105 duration-300"
+            className={`w-full h-full object-cover transition-transform hover:scale-105 duration-300 ${imageLoading ? 'opacity-0' : 'opacity-100'}`}
             loading="lazy"
+            onError={handleImageError}
+            onLoad={handleImageLoad}
           />
           <Badge variant="secondary" className="absolute top-3 right-3 bg-amber-500 text-white font-bold px-3 py-1 rounded-full">
             {formatPrice(item.price)}
