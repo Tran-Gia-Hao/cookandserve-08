@@ -1,4 +1,3 @@
-
 import { MenuItem, Order, OrderItem, Staff, DailySummary, OrderStatus, ItemStatus } from '../models/types';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -66,16 +65,7 @@ export const menuItems: MenuItem[] = [
     category: 'Lẩu',
     image: 'https://images.unsplash.com/photo-1574484284002-952d92456975?ixlib=rb-4.0.3',
     available: true
-  },
-  {
-    id: uuidv4(),
-    name: 'Bánh Kem Matcha',
-    description: 'Bánh kem mềm mịn hương vị trà xanh Nhật Bản đặc trưng',
-    price: 40000,
-    category: 'Tráng Miệng',
-    image: 'https://images.unsplash.com/photo-1575377222312-dd1a63a51638?ixlib=rb-4.0.3',
-    available: true
-  },
+  }
 ];
 
 // Staff
