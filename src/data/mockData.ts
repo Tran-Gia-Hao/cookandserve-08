@@ -1,79 +1,79 @@
 
-import { MenuItem, Order, OrderItem, Staff, DailySummary, ItemStatus, OrderStatus } from '../models/types';
+import { MenuItem, Order, OrderItem, Staff, DailySummary, OrderStatus, ItemStatus } from '../models/types';
 import { v4 as uuidv4 } from 'uuid';
 
 // Menu Items
 export const menuItems: MenuItem[] = [
   {
     id: uuidv4(),
-    name: 'Phở Bò Tái',
-    description: 'Phở với thịt bò tái mỏng, hành và các loại gia vị tươi',
-    price: 95000,
-    category: 'Món Chính',
-    image: 'https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?ixlib=rb-4.0.3',
-    available: true
-  },
-  {
-    id: uuidv4(),
-    name: 'Chả Giò (4 cuốn)',
-    description: 'Chả giò giòn rụm với nhân thịt và rau củ, ăn kèm với nước mắm chua ngọt',
-    price: 65000,
-    category: 'Khai Vị',
-    image: 'https://images.unsplash.com/photo-1559018750-d3643b5a73f0?ixlib=rb-4.0.3',
-    available: true
-  },
-  {
-    id: uuidv4(),
-    name: 'Cơm Tấm Sườn',
-    description: 'Cơm tấm với sườn nướng, trứng ốp la và đồ chua',
-    price: 85000,
-    category: 'Món Chính',
-    image: 'https://images.unsplash.com/photo-1569058242253-92a9c755a0ec?ixlib=rb-4.0.3',
-    available: true
-  },
-  {
-    id: uuidv4(),
-    name: 'Bún Chả',
-    description: 'Bún với thịt viên và thịt heo nướng, nước chấm chua ngọt và rau sống',
-    price: 78000,
-    category: 'Món Chính',
-    image: 'https://images.unsplash.com/photo-1627476226547-9e36d61fa8ac?ixlib=rb-4.0.3',
-    available: true
-  },
-  {
-    id: uuidv4(),
-    name: 'Chè Ba Màu',
-    description: 'Chè ngọt với đậu đỏ, đậu xanh và thạch đen, nước cốt dừa',
-    price: 45000,
-    category: 'Tráng Miệng',
-    image: 'https://images.unsplash.com/photo-1567157577867-05ccb1388e66?ixlib=rb-4.0.3',
-    available: true
-  },
-  {
-    id: uuidv4(),
-    name: 'Gỏi Cuốn (6 cuốn)',
-    description: 'Gỏi cuốn tươi với tôm, thịt heo, bún, rau sống và nước mắm',
-    price: 70000,
-    category: 'Khai Vị',
-    image: 'https://images.unsplash.com/photo-1548809542-17526d30f341?ixlib=rb-4.0.3',
-    available: true
-  },
-  {
-    id: uuidv4(),
-    name: 'Cá Kho Tộ',
-    description: 'Cá kho trong tộ đất với nước mắm, đường thốt nốt và tiêu',
-    price: 120000,
-    category: 'Món Chính',
-    image: 'https://images.unsplash.com/photo-1518980200453-9dde53dc3363?ixlib=rb-4.0.3',
-    available: true
-  },
-  {
-    id: uuidv4(),
-    name: 'Bánh Flan',
-    description: 'Bánh flan mềm mịn với nước caramel thơm ngậy',
+    name: 'Sushi Cá Hồi',
+    description: 'Sushi được phủ lớp cá hồi tươi ngon trên nền cơm trắng mịn, cuốn rong biển',
     price: 35000,
+    category: 'Sushi & Sashimi',
+    image: 'https://images.unsplash.com/photo-1579871494447-9811cf80d66c?ixlib=rb-4.0.3',
+    available: true
+  },
+  {
+    id: uuidv4(),
+    name: 'Cánh Gà Nướng BBQ',
+    description: 'Cánh gà tẩm ướp gia vị đặc biệt, nướng trên bếp than hoa thơm nức',
+    price: 65000,
+    category: 'BBQ',
+    image: 'https://images.unsplash.com/photo-1527477396000-e27163b481c2?ixlib=rb-4.0.3',
+    available: true
+  },
+  {
+    id: uuidv4(),
+    name: 'Lẩu Thái Chua Cay',
+    description: 'Nước lẩu Thái chua cay đặc trưng với hương vị đậm đà, hấp dẫn',
+    price: 120000,
+    category: 'Lẩu',
+    image: 'https://images.unsplash.com/photo-1563245372-f21724e3856d?ixlib=rb-4.0.3',
+    available: true
+  },
+  {
+    id: uuidv4(),
+    name: 'Bò Nướng Lá Lốt',
+    description: 'Thịt bò xay cuộn trong lá lốt thơm nức, nướng than hoa đặc sắc',
+    price: 85000,
+    category: 'BBQ',
+    image: 'https://images.unsplash.com/photo-1544025162-d76694265947?ixlib=rb-4.0.3',
+    available: true
+  },
+  {
+    id: uuidv4(),
+    name: 'Tôm Sú Nướng Muối Ớt',
+    description: 'Tôm sú tươi nướng với muối ớt đặc biệt của nhà hàng',
+    price: 95000,
+    category: 'Hải Sản',
+    image: 'https://images.unsplash.com/photo-1565557623262-b51c2513a641?ixlib=rb-4.0.3',
+    available: true
+  },
+  {
+    id: uuidv4(),
+    name: 'Kimbap Rong Biển',
+    description: 'Cơm cuộn với rong biển, trứng, dưa leo và các loại rau',
+    price: 45000,
+    category: 'Món Hàn',
+    image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3',
+    available: true
+  },
+  {
+    id: uuidv4(),
+    name: 'Lẩu Kimchi',
+    description: 'Lẩu kimchi cay nồng đặc trưng ẩm thực Hàn Quốc tại Manwah',
+    price: 150000,
+    category: 'Lẩu',
+    image: 'https://images.unsplash.com/photo-1574484284002-952d92456975?ixlib=rb-4.0.3',
+    available: true
+  },
+  {
+    id: uuidv4(),
+    name: 'Bánh Kem Matcha',
+    description: 'Bánh kem mềm mịn hương vị trà xanh Nhật Bản đặc trưng',
+    price: 40000,
     category: 'Tráng Miệng',
-    image: 'https://images.unsplash.com/photo-1528252094031-4d3392f4e2d7?ixlib=rb-4.0.3',
+    image: 'https://images.unsplash.com/photo-1575377222312-dd1a63a51638?ixlib=rb-4.0.3',
     available: true
   },
 ];
