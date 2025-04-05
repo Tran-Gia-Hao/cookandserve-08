@@ -17,6 +17,55 @@ import { menuItems } from '@/data/mockData';
 import { MenuItem, Order, OrderItem } from '@/models/types';
 import { v4 as uuidv4 } from 'uuid';
 
+// Define the buffet package options
+const buffetPackages: MenuItem[] = [
+  {
+    id: 'buffet-1',
+    name: 'Buffet Linh Vân Các',
+    description: 'Buffet lẩu-nướng cơ bản với các nguyên liệu tươi ngon, phù hợp với những người mới trải nghiệm lẩu-nướng.',
+    price: 229000,
+    category: 'Buffet Package',
+    available: true,
+    image: '/lovable-uploads/c986888e-9375-4044-a0c7-8730af79c1bb.png'
+  },
+  {
+    id: 'buffet-2',
+    name: 'Buffet Phúc Khả Vương',
+    description: 'Buffet lẩu-nướng với nhiều loại thịt, hải sản và rau củ hơn. Phù hợp với các nhóm bạn và gia đình.',
+    price: 329000,
+    category: 'Buffet Package',
+    available: true,
+    image: '/lovable-uploads/82f1ce40-8386-49bc-a8d8-778e79aae7b6.png'
+  },
+  {
+    id: 'buffet-3',
+    name: 'Buffet Bách Giai Vị',
+    description: 'Buffet cao cấp với các loại thịt bò Mỹ, hải sản tươi sống và nước lẩu đặc biệt.',
+    price: 419000,
+    category: 'Buffet Package',
+    available: true,
+    image: '/lovable-uploads/024216f8-a3ca-4d53-9aa4-2ea28f95b305.png'
+  },
+  {
+    id: 'buffet-4',
+    name: 'Buffet Vạn Giai Kỳ',
+    description: 'Buffet thượng hạng với thịt bò Wagyu, hải sản cao cấp và nhiều món đặc biệt của nhà hàng.',
+    price: 499000,
+    category: 'Buffet Package',
+    available: true,
+    image: '/lovable-uploads/28f587d5-b15a-4594-b83d-d3ae62d74eba.png'
+  },
+  {
+    id: 'buffet-5',
+    name: 'Buffet Phúc Mãn Đường',
+    description: 'Buffet đẳng cấp với thịt bò A5 Wagyu, hải sản nhập khẩu và phục vụ VIP với không gian sang trọng.',
+    price: 619000,
+    category: 'Buffet Package',
+    available: true,
+    image: '/lovable-uploads/c10ca89a-a0d1-41f4-a879-59401d0ba3fb.png'
+  }
+];
+
 const CustomerPage = () => {
   const [cartItems, setCartItems] = useState<OrderItem[]>([]);
   const [tableNumber, setTableNumber] = useState(1);
@@ -25,11 +74,31 @@ const CustomerPage = () => {
   const [orderHistory, setOrderHistory] = useState<Order[]>([]);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [menuType, setMenuType] = useState<'a-la-carte' | 'buffet'>('a-la-carte');
+  const [selectedBuffet, setSelectedBuffet] = useState<string>('');
   const { toast } = useToast();
 
-  const categories = ['All', ...Array.from(new Set(menuItems.map(item => item.category)))];
+  // Combine regular menu items and buffet packages for display
+  const allMenuItems = [...menuItems, ...(menuType === 'buffet' ? [] : buffetPackages)];
+  
+  const categories = ['All', ...Array.from(new Set(allMenuItems.map(item => item.category)))];
 
   const addToOrder = (item: MenuItem) => {
+    if (item.category === 'Buffet Package') {
+      // If selecting a buffet package
+      setSelectedBuffet(item.name);
+      setMenuType('buffet');
+      
+      // Clear cart when changing buffet package
+      setCartItems([]);
+      
+      toast({
+        title: "Gói buffet đã chọn",
+        description: `Bạn đã chọn ${item.name} với giá ${item.price.toLocaleString('vi-VN')}₫/người.`,
+        duration: 3000
+      });
+      return;
+    }
+    
     const existingItem = cartItems.find(cartItem => cartItem.menuItemId === item.id);
     
     if (existingItem) {
@@ -79,11 +148,22 @@ const CustomerPage = () => {
   };
 
   const submitOrder = () => {
-    if (cartItems.length === 0) return;
+    // For buffet, allow submitting with empty cart (just selected dishes)
+    if (menuType === 'a-la-carte' && cartItems.length === 0) return;
     
-    const totalPrice = menuType === 'buffet' 
-      ? 299000 * tableNumber // Example buffet price per person
-      : cartItems.reduce((sum, item) => sum + (item.menuItem.price * item.quantity), 0);
+    // Calculate price based on menu type
+    let totalPrice = 0;
+    
+    if (menuType === 'buffet') {
+      // Find the selected buffet package price
+      const selectedPackage = buffetPackages.find(pkg => pkg.name === selectedBuffet);
+      if (selectedPackage) {
+        totalPrice = selectedPackage.price * tableNumber; // Price per person * number of people
+      }
+    } else {
+      // For à-la-carte, calculate based on cart items
+      totalPrice = cartItems.reduce((sum, item) => sum + (item.menuItem.price * item.quantity), 0);
+    }
     
     const newOrder: Order = {
       id: uuidv4(),
@@ -113,6 +193,20 @@ const CustomerPage = () => {
   const closeOrderDetails = () => {
     setIsDetailOpen(false);
     setSelectedOrder(null);
+  };
+
+  // Handle menu type change
+  const handleMenuTypeChange = (value: 'a-la-carte' | 'buffet') => {
+    setMenuType(value);
+    if (value === 'a-la-carte') {
+      setSelectedBuffet('');
+      setCartItems([]);
+    }
+    // If switching to buffet but no package selected, default to first package
+    else if (value === 'buffet' && !selectedBuffet) {
+      setSelectedBuffet(buffetPackages[0].name);
+      setCartItems([]);
+    }
   };
 
   return (
@@ -145,13 +239,13 @@ const CustomerPage = () => {
           </TabsList>
           
           <TabsContent value="menu">
+            {/* Menu Type Selection */}
             <Card className="mb-4">
               <CardContent className="pt-6">
                 <div className="text-lg font-medium mb-2">Lựa chọn kiểu gọi món:</div>
                 <RadioGroup 
-                  defaultValue="a-la-carte" 
                   value={menuType}
-                  onValueChange={(value) => setMenuType(value as 'a-la-carte' | 'buffet')}
+                  onValueChange={(value) => handleMenuTypeChange(value as 'a-la-carte' | 'buffet')}
                   className="flex space-x-4"
                 >
                   <div className="flex items-center space-x-2">
@@ -163,16 +257,51 @@ const CustomerPage = () => {
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value="buffet" id="buffet" />
                     <label htmlFor="buffet" className="cursor-pointer">
-                      Buffet Manwah (299.000₫/người)
+                      Buffet
                     </label>
                   </div>
                 </RadioGroup>
               </CardContent>
             </Card>
             
+            {/* Buffet Package Selection */}
+            {menuType === 'buffet' && (
+              <div className="mb-6">
+                <h2 className="text-lg font-semibold mb-3">Chọn gói Buffet:</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                  {buffetPackages.map(pkg => (
+                    <MenuItemCard
+                      key={pkg.id}
+                      item={pkg}
+                      onAddToOrder={addToOrder}
+                      menuType={menuType}
+                      buffetOption={selectedBuffet}
+                    />
+                  ))}
+                </div>
+                
+                {selectedBuffet && (
+                  <div className="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-md">
+                    <p className="text-amber-800">
+                      <span className="font-bold">Gói đã chọn:</span> {selectedBuffet}
+                    </p>
+                    <p className="text-sm text-gray-600 mt-1">
+                      Hãy chọn những món bạn muốn từ menu bên dưới.
+                    </p>
+                  </div>
+                )}
+                
+                <Separator className="my-6" />
+              </div>
+            )}
+            
+            {/* Regular Menu Categories */}
             <ScrollArea className="h-12 whitespace-nowrap pb-2 mb-6">
               <div className="flex space-x-2">
-                {categories.map(category => (
+                {categories
+                  // Hide Buffet Package category from categories list
+                  .filter(cat => cat !== 'Buffet Package')
+                  .map(category => (
                   <Button
                     key={category}
                     variant={activeCategory === category ? "default" : "outline"}
@@ -185,15 +314,21 @@ const CustomerPage = () => {
               </div>
             </ScrollArea>
             
+            {/* Menu Items Display */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 pb-20">
-              {menuItems
-                .filter(item => activeCategory === 'All' || item.category === activeCategory)
+              {allMenuItems
+                .filter(item => 
+                  // Don't show buffet packages in regular menu
+                  item.category !== 'Buffet Package' && 
+                  (activeCategory === 'All' || item.category === activeCategory)
+                )
                 .map(item => (
                   <MenuItemCard
                     key={item.id}
                     item={item}
                     onAddToOrder={addToOrder}
                     menuType={menuType}
+                    buffetOption={selectedBuffet}
                   />
                 ))
               }
@@ -248,7 +383,7 @@ const CustomerPage = () => {
                       
                       <div className="flex justify-between">
                         <div className="font-semibold">Total</div>
-                        <div className="font-semibold">${order.totalPrice.toFixed(2)}</div>
+                        <div className="font-semibold">{order.totalPrice.toLocaleString('vi-VN')} ₫</div>
                       </div>
                       
                       <Button

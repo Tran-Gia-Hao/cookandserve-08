@@ -15,6 +15,7 @@ interface MenuItemCardProps {
   onDecrease?: () => void;
   inOrder?: boolean;
   menuType?: 'a-la-carte' | 'buffet';
+  buffetOption?: string;
 }
 
 const MenuItemCard: React.FC<MenuItemCardProps> = ({ 
@@ -24,7 +25,8 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
   onIncrease, 
   onDecrease,
   inOrder = false,
-  menuType = 'a-la-carte'
+  menuType = 'a-la-carte',
+  buffetOption = ''
 }) => {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
@@ -50,8 +52,11 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
     return "Thêm vào giỏ";
   };
 
+  // For buffet cards (when the item represents a buffet package)
+  const isBuffetPackage = item.category === 'Buffet Package';
+
   return (
-    <Card className="menu-item overflow-hidden h-full flex flex-col shadow-md hover:shadow-lg transition-shadow">
+    <Card className={`menu-item overflow-hidden h-full flex flex-col shadow-md hover:shadow-lg transition-shadow ${isBuffetPackage ? 'border-amber-400 border-2' : ''}`}>
       <div className="w-full h-48 overflow-hidden relative">
         {item.image && !imageError ? (
           <>
@@ -70,9 +75,18 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
             <ImageIcon className="h-16 w-16 text-gray-400" />
           </div>
         )}
-        {menuType === 'a-la-carte' && (
+        
+        {/* Show price badge for à-la-carte items and buffet packages */}
+        {(menuType === 'a-la-carte' || isBuffetPackage) && (
           <Badge variant="secondary" className="absolute top-3 right-3 bg-amber-500 text-white font-bold px-3 py-1 rounded-full">
             {formatPrice(item.price)}
+          </Badge>
+        )}
+
+        {/* Special badge for active buffet option */}
+        {isBuffetPackage && buffetOption === item.name && (
+          <Badge variant="secondary" className="absolute top-3 left-3 bg-green-600 text-white font-bold px-3 py-1 rounded-full">
+            Đã chọn
           </Badge>
         )}
       </div>
@@ -88,10 +102,15 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
             Hết hàng
           </Badge>
         )}
-        {menuType === 'buffet' && item.available && (
+        {menuType === 'buffet' && !isBuffetPackage && item.available && (
           <Badge variant="outline" className="mt-2 bg-green-50 text-green-800 border-green-300">
             Buffet
           </Badge>
+        )}
+
+        {/* If item is a buffet package, show price per person */}
+        {isBuffetPackage && (
+          <p className="mt-2 text-sm text-gray-600">{formatPrice(item.price)}/người</p>
         )}
       </CardContent>
       <CardFooter className="pt-2">
@@ -121,9 +140,9 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
           <Button 
             onClick={() => onAddToOrder(item)} 
             className="w-full bg-amber-500 hover:bg-amber-600 text-white" 
-            disabled={!item.available}
+            disabled={!item.available || (isBuffetPackage && buffetOption === item.name)}
           >
-            {getButtonText()}
+            {isBuffetPackage ? (buffetOption === item.name ? "Đã chọn" : "Chọn gói") : getButtonText()}
           </Button>
         )}
       </CardFooter>
