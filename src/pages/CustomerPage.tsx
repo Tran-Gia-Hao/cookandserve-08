@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -75,6 +74,7 @@ const CustomerPage = () => {
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [menuType, setMenuType] = useState<'a-la-carte' | 'buffet'>('a-la-carte');
   const [selectedBuffet, setSelectedBuffet] = useState<string>('');
+  const [peopleCount, setPeopleCount] = useState(1); // Add people count for buffet orders
   const { toast } = useToast();
 
   // Combine regular menu items and buffet packages for display
@@ -91,6 +91,22 @@ const CustomerPage = () => {
       // Clear cart when changing buffet package
       setCartItems([]);
       
+      // Add selected buffet as a special item to cart for tracking
+      const buffetItem: OrderItem = {
+        id: uuidv4(),
+        menuItemId: item.id,
+        menuItem: {
+          ...item,
+          notes: `Buffet Package: ${peopleCount} người`
+        },
+        quantity: 1, // Always 1 for buffet package
+        status: 'pending',
+        createdAt: new Date(),
+        updatedAt: new Date()
+      };
+      
+      setCartItems([buffetItem]);
+      
       toast({
         title: "Gói buffet đã chọn",
         description: `Bạn đã chọn ${item.name} với giá ${item.price.toLocaleString('vi-VN')}₫/người.`,
@@ -99,25 +115,62 @@ const CustomerPage = () => {
       return;
     }
     
-    const existingItem = cartItems.find(cartItem => cartItem.menuItemId === item.id);
-    
-    if (existingItem) {
-      setCartItems(cartItems.map(cartItem => 
-        cartItem.menuItemId === item.id 
-          ? { ...cartItem, quantity: cartItem.quantity + 1 } 
-          : cartItem
-      ));
+    if (menuType === 'buffet' && item.category !== 'Buffet Package') {
+      // For buffet, add items without affecting the price
+      const existingItem = cartItems.find(cartItem => 
+        cartItem.menuItemId === item.id && 
+        cartItem.menuItem.category !== 'Buffet Package'
+      );
+      
+      if (existingItem) {
+        setCartItems(cartItems.map(cartItem => 
+          cartItem.menuItemId === item.id && cartItem.menuItem.category !== 'Buffet Package'
+            ? { ...cartItem, quantity: cartItem.quantity + 1 } 
+            : cartItem
+        ));
+      } else {
+        const newItem: OrderItem = {
+          id: uuidv4(),
+          menuItemId: item.id,
+          menuItem: item,
+          quantity: 1,
+          status: 'pending',
+          createdAt: new Date(),
+          updatedAt: new Date()
+        };
+        
+        // Find the buffet package item
+        const buffetItem = cartItems.find(item => item.menuItem.category === 'Buffet Package');
+        
+        // Add new item while keeping the buffet package
+        if (buffetItem) {
+          setCartItems([buffetItem, ...cartItems.filter(item => item.menuItem.category !== 'Buffet Package'), newItem]);
+        } else {
+          setCartItems([...cartItems, newItem]);
+        }
+      }
     } else {
-      const newItem: OrderItem = {
-        id: uuidv4(),
-        menuItemId: item.id,
-        menuItem: item,
-        quantity: 1,
-        status: 'pending',
-        createdAt: new Date(),
-        updatedAt: new Date()
-      };
-      setCartItems([...cartItems, newItem]);
+      // For à-la-carte, normal behavior
+      const existingItem = cartItems.find(cartItem => cartItem.menuItemId === item.id);
+      
+      if (existingItem) {
+        setCartItems(cartItems.map(cartItem => 
+          cartItem.menuItemId === item.id 
+            ? { ...cartItem, quantity: cartItem.quantity + 1 } 
+            : cartItem
+        ));
+      } else {
+        const newItem: OrderItem = {
+          id: uuidv4(),
+          menuItemId: item.id,
+          menuItem: item,
+          quantity: 1,
+          status: 'pending',
+          createdAt: new Date(),
+          updatedAt: new Date()
+        };
+        setCartItems([...cartItems, newItem]);
+      }
     }
     
     const message = menuType === 'buffet' 
@@ -132,10 +185,27 @@ const CustomerPage = () => {
   };
 
   const removeFromOrder = (itemId: string) => {
+    // Don't remove buffet package from cart when in buffet mode
+    const item = cartItems.find(item => item.id === itemId);
+    if (menuType === 'buffet' && item?.menuItem.category === 'Buffet Package') {
+      toast({
+        title: "Không thể xóa gói buffet",
+        description: "Bạn cần chọn một gói buffet để đặt món",
+        variant: "destructive"
+      });
+      return;
+    }
+    
     setCartItems(cartItems.filter(item => item.id !== itemId));
   };
 
   const updateQuantity = (itemId: string, quantity: number) => {
+    // Don't allow changing quantity of buffet package
+    const item = cartItems.find(item => item.id === itemId);
+    if (menuType === 'buffet' && item?.menuItem.category === 'Buffet Package') {
+      return;
+    }
+    
     setCartItems(cartItems.map(item => 
       item.id === itemId ? { ...item, quantity } : item
     ));
@@ -148,8 +218,26 @@ const CustomerPage = () => {
   };
 
   const submitOrder = () => {
-    // For buffet, allow submitting with empty cart (just selected dishes)
-    if (menuType === 'a-la-carte' && cartItems.length === 0) return;
+    // For buffet, require at least the package to be selected
+    const hasBuffetPackage = menuType === 'buffet' && cartItems.some(item => item.menuItem.category === 'Buffet Package');
+    
+    if (menuType === 'buffet' && !hasBuffetPackage) {
+      toast({
+        title: "Chưa chọn gói buffet",
+        description: "Vui lòng chọn một gói buffet trước khi đặt món",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    if (menuType === 'a-la-carte' && cartItems.length === 0) {
+      toast({
+        title: "Giỏ hàng trống",
+        description: "Vui lòng thêm món vào giỏ hàng trước khi đặt",
+        variant: "destructive"
+      });
+      return;
+    }
     
     // Calculate price based on menu type
     let totalPrice = 0;
@@ -158,8 +246,15 @@ const CustomerPage = () => {
       // Find the selected buffet package price
       const selectedPackage = buffetPackages.find(pkg => pkg.name === selectedBuffet);
       if (selectedPackage) {
-        totalPrice = selectedPackage.price * tableNumber; // Price per person * number of people
+        totalPrice = selectedPackage.price * peopleCount; // Price per person * number of people
       }
+      
+      // Update buffet package note with people count
+      setCartItems(items => items.map(item => 
+        item.menuItem.category === 'Buffet Package' 
+          ? { ...item, menuItem: { ...item.menuItem, notes: `${peopleCount} người` }}
+          : item
+      ));
     } else {
       // For à-la-carte, calculate based on cart items
       totalPrice = cartItems.reduce((sum, item) => sum + (item.menuItem.price * item.quantity), 0);
@@ -176,7 +271,18 @@ const CustomerPage = () => {
     };
     
     setOrderHistory([newOrder, ...orderHistory]);
-    setCartItems([]);
+    
+    // Reset cart but keep buffet selection if in buffet mode
+    if (menuType === 'buffet') {
+      const buffetItem = cartItems.find(item => item.menuItem.category === 'Buffet Package');
+      if (buffetItem) {
+        setCartItems([buffetItem]);
+      } else {
+        setCartItems([]);
+      }
+    } else {
+      setCartItems([]);
+    }
     
     toast({
       title: "Đã đặt món!",
@@ -205,7 +311,37 @@ const CustomerPage = () => {
     // If switching to buffet but no package selected, default to first package
     else if (value === 'buffet' && !selectedBuffet) {
       setSelectedBuffet(buffetPackages[0].name);
-      setCartItems([]);
+      
+      // Add selected buffet as a special item to cart for tracking
+      const buffetItem: OrderItem = {
+        id: uuidv4(),
+        menuItemId: buffetPackages[0].id,
+        menuItem: {
+          ...buffetPackages[0],
+          notes: `${peopleCount} người`
+        },
+        quantity: 1,
+        status: 'pending',
+        createdAt: new Date(),
+        updatedAt: new Date()
+      };
+      
+      setCartItems([buffetItem]);
+    }
+  };
+
+  // Handle people count change for buffet
+  const handlePeopleCountChange = (count: number) => {
+    setPeopleCount(Math.max(1, count));
+    
+    // Update buffet item in cart if it exists
+    const buffetItem = cartItems.find(item => item.menuItem.category === 'Buffet Package');
+    if (buffetItem) {
+      setCartItems(items => items.map(item => 
+        item.menuItem.category === 'Buffet Package' 
+          ? { ...item, menuItem: { ...item.menuItem, notes: `${count} người` }}
+          : item
+      ));
     }
   };
 
@@ -285,7 +421,31 @@ const CustomerPage = () => {
                     <p className="text-amber-800">
                       <span className="font-bold">Gói đã chọn:</span> {selectedBuffet}
                     </p>
-                    <p className="text-sm text-gray-600 mt-1">
+                    <div className="flex items-center mt-2">
+                      <span className="text-sm text-gray-700 mr-3">Số người:</span>
+                      <div className="flex items-center border border-gray-300 rounded-md">
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          className="h-8 px-3 text-gray-700 hover:bg-gray-100 rounded-none rounded-l-md"
+                          onClick={() => handlePeopleCountChange(peopleCount - 1)}
+                        >
+                          <Minus className="h-4 w-4" />
+                        </Button>
+                        <span className="px-3 h-8 flex items-center justify-center border-x border-gray-300 min-w-[40px]">
+                          {peopleCount}
+                        </span>
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          className="h-8 px-3 text-gray-700 hover:bg-gray-100 rounded-none rounded-r-md"
+                          onClick={() => handlePeopleCountChange(peopleCount + 1)}
+                        >
+                          <Plus className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                    <p className="text-sm text-gray-600 mt-3">
                       Hãy chọn những món bạn muốn từ menu bên dưới.
                     </p>
                   </div>
@@ -373,7 +533,11 @@ const CustomerPage = () => {
                         <div className="text-sm font-medium">Order Summary</div>
                         <ul className="text-sm">
                           {order.items.slice(0, 3).map((item, index) => (
-                            <li key={index}>{item.quantity}x {item.menuItem.name}</li>
+                            <li key={index}>
+                              {item.menuItem.category === 'Buffet Package' 
+                                ? `${item.menuItem.name} - ${item.menuItem.notes}` 
+                                : `${item.quantity}x ${item.menuItem.name}`}
+                            </li>
                           ))}
                           {order.items.length > 3 && (
                             <li className="text-gray-500">+{order.items.length - 3} more items</li>
@@ -409,6 +573,9 @@ const CustomerPage = () => {
         onSubmitOrder={submitOrder}
         tableNumber={tableNumber}
         onTableNumberChange={setTableNumber}
+        menuType={menuType}
+        peopleCount={peopleCount}
+        onPeopleCountChange={handlePeopleCountChange}
       />
       
       <OrderDetail

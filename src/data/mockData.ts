@@ -1,4 +1,3 @@
-
 import { MenuItem, Order, OrderItem, Staff, DailySummary, OrderStatus, ItemStatus } from '../models/types';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -28,7 +27,7 @@ export const menuItems: MenuItem[] = [
     description: 'Nước lẩu Thái chua cay đặc trưng với hương vị đậm đà, hấp dẫn',
     price: 120000,
     category: 'Lẩu',
-    image: 'https://images.unsplash.com/photo-1677095667396-3c13ee0a1fa8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80',
+    image: '/lovable-uploads/c986888e-9375-4044-a0c7-8730af79c1bb.png',
     available: true
   },
   {
@@ -46,7 +45,7 @@ export const menuItems: MenuItem[] = [
     description: 'Tôm sú tươi nướng với muối ớt đặc biệt của nhà hàng',
     price: 95000,
     category: 'Hải Sản',
-    image: 'https://images.unsplash.com/photo-1565802527863-1353e4e273e1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=735&q=80',
+    image: '/lovable-uploads/82f1ce40-8386-49bc-a8d8-778e79aae7b6.png',
     available: true
   },
   {
@@ -55,7 +54,7 @@ export const menuItems: MenuItem[] = [
     description: 'Lẩu kimchi cay nồng đặc trưng ẩm thực Hàn Quốc tại Manwah',
     price: 150000,
     category: 'Lẩu',
-    image: 'https://images.unsplash.com/photo-1606850780554-b55ea4dd0b70?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80',
+    image: '/lovable-uploads/024216f8-a3ca-4d53-9aa4-2ea28f95b305.png',
     available: true
   },
   {

@@ -18,6 +18,9 @@ interface OrderCartProps {
   onSubmitOrder: () => void;
   tableNumber: number;
   onTableNumberChange: (tableNumber: number) => void;
+  menuType?: 'a-la-carte' | 'buffet';
+  peopleCount?: number;
+  onPeopleCountChange?: (count: number) => void;
 }
 
 const OrderCart: React.FC<OrderCartProps> = ({
@@ -27,13 +30,33 @@ const OrderCart: React.FC<OrderCartProps> = ({
   onAddNote,
   onSubmitOrder,
   tableNumber,
-  onTableNumberChange
+  onTableNumberChange,
+  menuType = 'a-la-carte',
+  peopleCount = 1,
+  onPeopleCountChange
 }) => {
-  const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
-  const totalPrice = items.reduce((sum, item) => sum + (item.menuItem.price * item.quantity), 0);
+  const totalItems = items.reduce((sum, item) => {
+    // Don't count buffet package in total items
+    if (item.menuItem.category === 'Buffet Package') return sum;
+    return sum + item.quantity;
+  }, 0);
+  
+  const buffetItem = items.find(item => item.menuItem.category === 'Buffet Package');
+  
+  // Calculate total price based on menu type
+  let totalPrice = 0;
+  if (menuType === 'buffet' && buffetItem) {
+    totalPrice = buffetItem.menuItem.price * (peopleCount || 1);
+  } else {
+    totalPrice = items.reduce((sum, item) => sum + (item.menuItem.price * item.quantity), 0);
+  }
 
   const handleSubmitOrder = () => {
-    if (items.length === 0 || tableNumber <= 0) return;
+    if ((menuType === 'a-la-carte' && items.length === 0) || tableNumber <= 0) return;
+    
+    // For buffet, we need at least the buffet package
+    if (menuType === 'buffet' && !buffetItem) return;
+    
     onSubmitOrder();
   };
 
@@ -42,9 +65,9 @@ const OrderCart: React.FC<OrderCartProps> = ({
       <SheetTrigger asChild>
         <Button className="fixed bottom-6 right-6 h-16 w-16 rounded-full shadow-lg button-primary">
           <ShoppingCart className="h-6 w-6" />
-          {totalItems > 0 && (
+          {(totalItems > 0 || buffetItem) && (
             <Badge className="absolute -top-2 -right-2 bg-restaurant-secondary">
-              {totalItems}
+              {buffetItem ? (totalItems > 0 ? totalItems : '1') : totalItems}
             </Badge>
           )}
         </Button>
@@ -53,7 +76,9 @@ const OrderCart: React.FC<OrderCartProps> = ({
         <SheetHeader className="text-left">
           <SheetTitle className="text-xl font-bold">Your Order</SheetTitle>
           <SheetDescription>
-            Review your items before placing the order
+            {menuType === 'buffet' 
+              ? "Chọn món buffet của bạn" 
+              : "Review your items before placing the order"}
           </SheetDescription>
         </SheetHeader>
         
@@ -89,72 +114,122 @@ const OrderCart: React.FC<OrderCartProps> = ({
           </div>
         </div>
         
+        {menuType === 'buffet' && buffetItem && onPeopleCountChange && (
+          <div className="mt-6 mb-2">
+            <Label htmlFor="peopleCount" className="text-base font-semibold">Số người</Label>
+            <div className="relative mt-2">
+              <Input
+                id="peopleCount"
+                type="number"
+                value={peopleCount}
+                onChange={(e) => onPeopleCountChange(parseInt(e.target.value) || 1)}
+                min={1}
+                className="pr-12 py-5 text-lg border-amber-300 rounded-lg"
+              />
+              <div className="absolute right-0 top-0 h-full flex flex-col border-l border-amber-300">
+                <Button 
+                  type="button" 
+                  variant="ghost" 
+                  className="h-1/2 px-3 text-gray-500 hover:text-gray-700"
+                  onClick={() => onPeopleCountChange(peopleCount + 1)}
+                >
+                  <ChevronUp className="h-4 w-4" />
+                </Button>
+                <Button 
+                  type="button" 
+                  variant="ghost" 
+                  className="h-1/2 px-3 text-gray-500 hover:text-gray-700 border-t border-amber-300"
+                  onClick={() => onPeopleCountChange(Math.max(1, peopleCount - 1))}
+                >
+                  <ChevronDown className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
+        
         <Separator className="my-6" />
         
-        {items.length === 0 ? (
-          <div className="py-8 text-center text-gray-500">
-            Your cart is empty. Add some items to get started.
-          </div>
-        ) : (
+        {/* Show different content based on menu type */}
+        {menuType === 'buffet' && buffetItem ? (
           <>
-            <ScrollArea className="h-[calc(60vh-200px)] pr-4">
+            {/* Display buffet package info */}
+            <div className="mb-4 p-4 bg-amber-50 border border-amber-200 rounded-md">
+              <div className="font-semibold text-lg">{buffetItem.menuItem.name}</div>
+              <div className="text-sm text-gray-700 mt-1">{buffetItem.menuItem.description}</div>
+              <div className="mt-2 flex justify-between text-amber-800">
+                <span>{peopleCount} người x {buffetItem.menuItem.price.toLocaleString('vi-VN')}₫</span>
+                <span className="font-bold">{totalPrice.toLocaleString('vi-VN')}₫</span>
+              </div>
+            </div>
+            
+            <div className="text-base font-semibold mb-2">Món đã chọn:</div>
+            
+            <ScrollArea className="h-[calc(60vh-280px)] pr-4">
               <div className="space-y-4">
-                {items.map((item) => (
-                  <div key={item.id} className="border border-amber-200 rounded-lg p-4 bg-white">
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <div className="font-semibold text-lg">{item.menuItem.name}</div>
-                        <div className="text-sm text-gray-500">
-                          ${item.menuItem.price.toFixed(2)} x {item.quantity}
+                {items
+                  .filter(item => item.menuItem.category !== 'Buffet Package')
+                  .map((item) => (
+                    <div key={item.id} className="border border-amber-200 rounded-lg p-4 bg-white">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <div className="font-semibold text-lg">{item.menuItem.name}</div>
+                          <div className="text-sm text-gray-500">
+                            Số lượng: {item.quantity}
+                          </div>
+                        </div>
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                          onClick={() => onRemoveItem(item.id)}
+                        >
+                          <Trash2 className="h-5 w-5" />
+                        </Button>
+                      </div>
+                      
+                      <div className="mt-3 flex items-center">
+                        <div className="flex items-center border border-gray-300 rounded-md">
+                          <Button 
+                            variant="ghost" 
+                            size="sm"
+                            className="h-8 px-3 text-gray-700 hover:bg-gray-100 rounded-none rounded-l-md"
+                            onClick={() => onUpdateQuantity(item.id, Math.max(1, item.quantity - 1))}
+                          >
+                            <Minus className="h-4 w-4" />
+                          </Button>
+                          <span className="px-3 h-8 flex items-center justify-center border-x border-gray-300 min-w-[40px]">
+                            {item.quantity}
+                          </span>
+                          <Button 
+                            variant="ghost" 
+                            size="sm"
+                            className="h-8 px-3 text-gray-700 hover:bg-gray-100 rounded-none rounded-r-md"
+                            onClick={() => onUpdateQuantity(item.id, item.quantity + 1)}
+                          >
+                            <Plus className="h-4 w-4" />
+                          </Button>
                         </div>
                       </div>
-                      <div className="font-semibold text-lg">
-                        ${(item.menuItem.price * item.quantity).toFixed(2)}
+                      
+                      <div className="mt-3">
+                        <Input
+                          placeholder="Ghi chú đặc biệt..."
+                          value={item.notes || ''}
+                          onChange={(e) => onAddNote(item.id, e.target.value)}
+                          className="text-sm border-amber-200 bg-amber-50/50 text-gray-600 py-5"
+                        />
                       </div>
                     </div>
-                    
-                    <div className="mt-3 flex items-center justify-between">
-                      <div className="flex items-center border border-gray-300 rounded-md">
-                        <Button 
-                          variant="ghost" 
-                          size="sm"
-                          className="h-8 px-3 text-gray-700 hover:bg-gray-100 rounded-none rounded-l-md"
-                          onClick={() => onUpdateQuantity(item.id, Math.max(1, item.quantity - 1))}
-                        >
-                          <Minus className="h-4 w-4" />
-                        </Button>
-                        <span className="px-3 h-8 flex items-center justify-center border-x border-gray-300 min-w-[40px]">
-                          {item.quantity}
-                        </span>
-                        <Button 
-                          variant="ghost" 
-                          size="sm"
-                          className="h-8 px-3 text-gray-700 hover:bg-gray-100 rounded-none rounded-r-md"
-                          onClick={() => onUpdateQuantity(item.id, item.quantity + 1)}
-                        >
-                          <Plus className="h-4 w-4" />
-                        </Button>
-                      </div>
-                      <Button 
-                        variant="ghost" 
-                        size="sm"
-                        className="text-red-500 hover:text-red-700 hover:bg-red-50"
-                        onClick={() => onRemoveItem(item.id)}
-                      >
-                        <Trash2 className="h-5 w-5" />
-                      </Button>
-                    </div>
-                    
-                    <div className="mt-3">
-                      <Input
-                        placeholder="Add special instructions..."
-                        value={item.notes || ''}
-                        onChange={(e) => onAddNote(item.id, e.target.value)}
-                        className="text-sm border-amber-200 bg-amber-50/50 text-gray-600 py-5"
-                      />
-                    </div>
+                  ))
+                }
+                
+                {items.filter(item => item.menuItem.category !== 'Buffet Package').length === 0 && (
+                  <div className="py-6 text-center text-gray-500">
+                    <p>Chưa có món nào được chọn.</p>
+                    <p>Chọn món từ menu để thêm vào đơn hàng.</p>
                   </div>
-                ))}
+                )}
               </div>
             </ScrollArea>
             
@@ -162,29 +237,132 @@ const OrderCart: React.FC<OrderCartProps> = ({
             
             <div>
               <div className="flex justify-between font-semibold text-lg mb-2">
-                <span>Subtotal</span>
-                <span>${totalPrice.toFixed(2)}</span>
+                <span>Tổng tiền ({peopleCount} người)</span>
+                <span>{totalPrice.toLocaleString('vi-VN')}₫</span>
               </div>
               <div className="flex justify-between text-gray-600 mb-2">
-                <span>Tax</span>
-                <span>${(totalPrice * 0.1).toFixed(2)}</span>
+                <span>Thuế (10%)</span>
+                <span>{(totalPrice * 0.1).toLocaleString('vi-VN')}₫</span>
               </div>
               <Separator className="my-4" />
               <div className="flex justify-between font-bold text-xl mb-6">
-                <span>Total</span>
-                <span>${(totalPrice * 1.1).toFixed(2)}</span>
+                <span>Thành tiền</span>
+                <span>{(totalPrice * 1.1).toLocaleString('vi-VN')}₫</span>
               </div>
               
               <Button 
                 className="w-full button-primary py-6 text-base"
                 onClick={handleSubmitOrder}
-                disabled={items.length === 0 || tableNumber <= 0}
+                disabled={tableNumber <= 0}
               >
                 <Send className="mr-2 h-5 w-5" />
-                Place Order
+                Đặt món
               </Button>
             </div>
           </>
+        ) : menuType === 'a-la-carte' || !buffetItem ? (
+          // Regular a-la-carte cart view
+          <>
+            {items.length === 0 ? (
+              <div className="py-8 text-center text-gray-500">
+                Your cart is empty. Add some items to get started.
+              </div>
+            ) : (
+              <>
+                <ScrollArea className="h-[calc(60vh-200px)] pr-4">
+                  <div className="space-y-4">
+                    {items.map((item) => (
+                      <div key={item.id} className="border border-amber-200 rounded-lg p-4 bg-white">
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <div className="font-semibold text-lg">{item.menuItem.name}</div>
+                            <div className="text-sm text-gray-500">
+                              {item.menuItem.price.toLocaleString('vi-VN')}₫ x {item.quantity}
+                            </div>
+                          </div>
+                          <div className="font-semibold text-lg">
+                            {(item.menuItem.price * item.quantity).toLocaleString('vi-VN')}₫
+                          </div>
+                        </div>
+                        
+                        <div className="mt-3 flex items-center justify-between">
+                          <div className="flex items-center border border-gray-300 rounded-md">
+                            <Button 
+                              variant="ghost" 
+                              size="sm"
+                              className="h-8 px-3 text-gray-700 hover:bg-gray-100 rounded-none rounded-l-md"
+                              onClick={() => onUpdateQuantity(item.id, Math.max(1, item.quantity - 1))}
+                            >
+                              <Minus className="h-4 w-4" />
+                            </Button>
+                            <span className="px-3 h-8 flex items-center justify-center border-x border-gray-300 min-w-[40px]">
+                              {item.quantity}
+                            </span>
+                            <Button 
+                              variant="ghost" 
+                              size="sm"
+                              className="h-8 px-3 text-gray-700 hover:bg-gray-100 rounded-none rounded-r-md"
+                              onClick={() => onUpdateQuantity(item.id, item.quantity + 1)}
+                            >
+                              <Plus className="h-4 w-4" />
+                            </Button>
+                          </div>
+                          <Button 
+                            variant="ghost" 
+                            size="sm"
+                            className="text-red-500 hover:text-red-700 hover:bg-red-50"
+                            onClick={() => onRemoveItem(item.id)}
+                          >
+                            <Trash2 className="h-5 w-5" />
+                          </Button>
+                        </div>
+                        
+                        <div className="mt-3">
+                          <Input
+                            placeholder="Add special instructions..."
+                            value={item.notes || ''}
+                            onChange={(e) => onAddNote(item.id, e.target.value)}
+                            className="text-sm border-amber-200 bg-amber-50/50 text-gray-600 py-5"
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </ScrollArea>
+                
+                <Separator className="my-6" />
+                
+                <div>
+                  <div className="flex justify-between font-semibold text-lg mb-2">
+                    <span>Subtotal</span>
+                    <span>{totalPrice.toLocaleString('vi-VN')}₫</span>
+                  </div>
+                  <div className="flex justify-between text-gray-600 mb-2">
+                    <span>Tax</span>
+                    <span>{(totalPrice * 0.1).toLocaleString('vi-VN')}₫</span>
+                  </div>
+                  <Separator className="my-4" />
+                  <div className="flex justify-between font-bold text-xl mb-6">
+                    <span>Total</span>
+                    <span>{(totalPrice * 1.1).toLocaleString('vi-VN')}₫</span>
+                  </div>
+                  
+                  <Button 
+                    className="w-full button-primary py-6 text-base"
+                    onClick={handleSubmitOrder}
+                    disabled={items.length === 0 || tableNumber <= 0}
+                  >
+                    <Send className="mr-2 h-5 w-5" />
+                    Place Order
+                  </Button>
+                </div>
+              </>
+            )}
+          </>
+        ) : (
+          <div className="py-8 text-center text-gray-500">
+            Please select a buffet package first.
+          </div>
         )}
       </SheetContent>
     </Sheet>
