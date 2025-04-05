@@ -1,9 +1,10 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { PlusCircle, MinusCircle } from 'lucide-react';
+import { PlusCircle, MinusCircle, ImageIcon } from 'lucide-react';
+import { Skeleton } from "@/components/ui/skeleton";
 import { MenuItem } from '@/models/types';
 
 interface MenuItemCardProps {
@@ -23,26 +24,46 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
   onDecrease,
   inOrder = false 
 }) => {
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageError, setImageError] = useState(false);
+
   // Format price in VND format
   const formatPrice = (price: number) => {
     return price.toLocaleString('vi-VN') + ' ₫';
   };
 
+  const handleImageLoad = () => {
+    setImageLoaded(true);
+  };
+
+  const handleImageError = () => {
+    setImageError(true);
+  };
+
   return (
     <Card className="menu-item overflow-hidden h-full flex flex-col shadow-md hover:shadow-lg transition-shadow">
-      {item.image && (
-        <div className="w-full h-48 overflow-hidden relative">
-          <img 
-            src={item.image} 
-            alt={item.name} 
-            className="w-full h-full object-cover transition-transform hover:scale-105 duration-300"
-            loading="lazy"
-          />
-          <Badge variant="secondary" className="absolute top-3 right-3 bg-amber-500 text-white font-bold px-3 py-1 rounded-full">
-            {formatPrice(item.price)}
-          </Badge>
-        </div>
-      )}
+      <div className="w-full h-48 overflow-hidden relative">
+        {item.image && !imageError ? (
+          <>
+            {!imageLoaded && <Skeleton className="absolute inset-0" />}
+            <img 
+              src={item.image} 
+              alt={item.name} 
+              className={`w-full h-full object-cover transition-transform hover:scale-105 duration-300 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+              loading="lazy"
+              onLoad={handleImageLoad}
+              onError={handleImageError}
+            />
+          </>
+        ) : (
+          <div className="w-full h-full flex items-center justify-center bg-gray-100">
+            <ImageIcon className="h-16 w-16 text-gray-400" />
+          </div>
+        )}
+        <Badge variant="secondary" className="absolute top-3 right-3 bg-amber-500 text-white font-bold px-3 py-1 rounded-full">
+          {formatPrice(item.price)}
+        </Badge>
+      </div>
       <CardHeader className="pb-2">
         <CardTitle className="text-lg font-bold text-amber-800">{item.name}</CardTitle>
         <CardDescription className="text-sm text-gray-600 line-clamp-2">
