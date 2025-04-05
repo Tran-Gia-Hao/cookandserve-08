@@ -13,6 +13,7 @@ export interface MenuItem {
   category: string;
   image?: string;
   available: boolean;
+  status?: ItemStatus; // for kitchen view
 }
 
 export interface OrderItem {
@@ -52,4 +53,9 @@ export interface DailySummary {
     name: string;
     count: number;
   }[];
+}
+
+// Kitchen-specific types
+export interface KitchenOrder extends Order {
+  priority?: 'normal' | 'high' | 'urgent';
 }

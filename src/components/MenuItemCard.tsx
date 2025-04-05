@@ -16,6 +16,7 @@ interface MenuItemCardProps {
   inOrder?: boolean;
   menuType?: 'a-la-carte' | 'buffet';
   buffetOption?: string;
+  compact?: boolean;
 }
 
 const MenuItemCard: React.FC<MenuItemCardProps> = ({ 
@@ -26,7 +27,8 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
   onDecrease,
   inOrder = false,
   menuType = 'a-la-carte',
-  buffetOption = ''
+  buffetOption = '',
+  compact = false
 }) => {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
@@ -54,6 +56,33 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
 
   // For buffet cards (when the item represents a buffet package)
   const isBuffetPackage = item.category === 'Buffet Package';
+
+  // For compact view (used in kitchen view)
+  if (compact) {
+    return (
+      <Card className="menu-item-compact overflow-hidden shadow-sm border-l-4 border-l-amber-500">
+        <CardContent className="p-3 flex justify-between items-center">
+          <div>
+            <h4 className="font-semibold text-sm">{item.name}</h4>
+            {item.notes && (
+              <p className="text-xs text-gray-500 italic mt-1">{item.notes}</p>
+            )}
+          </div>
+          <div className="flex items-center">
+            <Badge variant="outline" className="mr-2">x{quantity}</Badge>
+            <Badge className={`
+              ${item.status === 'pending' ? 'bg-amber-500' : ''}
+              ${item.status === 'cooking' ? 'bg-orange-500' : ''}
+              ${item.status === 'ready' ? 'bg-green-500' : ''}
+              ${item.status === 'served' ? 'bg-blue-500' : ''}
+            `}>
+              {item.status}
+            </Badge>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card className={`menu-item overflow-hidden h-full flex flex-col shadow-md hover:shadow-lg transition-shadow ${isBuffetPackage ? 'border-amber-400 border-2' : ''}`}>
