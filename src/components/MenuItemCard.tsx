@@ -14,6 +14,7 @@ interface MenuItemCardProps {
   onIncrease?: () => void;
   onDecrease?: () => void;
   inOrder?: boolean;
+  menuType?: 'a-la-carte' | 'buffet';
 }
 
 const MenuItemCard: React.FC<MenuItemCardProps> = ({ 
@@ -22,7 +23,8 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
   quantity = 0, 
   onIncrease, 
   onDecrease,
-  inOrder = false 
+  inOrder = false,
+  menuType = 'a-la-carte'
 }) => {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
@@ -38,6 +40,14 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
 
   const handleImageError = () => {
     setImageError(true);
+  };
+
+  // Different button text and behavior based on menu type
+  const getButtonText = () => {
+    if (menuType === 'buffet') {
+      return "Chọn món";
+    }
+    return "Thêm vào giỏ";
   };
 
   return (
@@ -60,9 +70,11 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
             <ImageIcon className="h-16 w-16 text-gray-400" />
           </div>
         )}
-        <Badge variant="secondary" className="absolute top-3 right-3 bg-amber-500 text-white font-bold px-3 py-1 rounded-full">
-          {formatPrice(item.price)}
-        </Badge>
+        {menuType === 'a-la-carte' && (
+          <Badge variant="secondary" className="absolute top-3 right-3 bg-amber-500 text-white font-bold px-3 py-1 rounded-full">
+            {formatPrice(item.price)}
+          </Badge>
+        )}
       </div>
       <CardHeader className="pb-2">
         <CardTitle className="text-lg font-bold text-amber-800">{item.name}</CardTitle>
@@ -74,6 +86,11 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
         {!item.available && (
           <Badge variant="destructive" className="mt-2">
             Hết hàng
+          </Badge>
+        )}
+        {menuType === 'buffet' && item.available && (
+          <Badge variant="outline" className="mt-2 bg-green-50 text-green-800 border-green-300">
+            Buffet
           </Badge>
         )}
       </CardContent>
@@ -106,7 +123,7 @@ const MenuItemCard: React.FC<MenuItemCardProps> = ({
             className="w-full bg-amber-500 hover:bg-amber-600 text-white" 
             disabled={!item.available}
           >
-            Thêm vào giỏ
+            {getButtonText()}
           </Button>
         )}
       </CardFooter>

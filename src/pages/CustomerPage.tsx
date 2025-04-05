@@ -9,6 +9,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from 'react-router-dom';
 import { HomeIcon, MenuIcon, History, ArrowLeft } from 'lucide-react';
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import MenuItemCard from '@/components/MenuItemCard';
 import OrderCart from '@/components/OrderCart';
 import OrderDetail from '@/components/OrderDetail';
@@ -23,6 +24,7 @@ const CustomerPage = () => {
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [orderHistory, setOrderHistory] = useState<Order[]>([]);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
+  const [menuType, setMenuType] = useState<'a-la-carte' | 'buffet'>('a-la-carte');
   const { toast } = useToast();
 
   const categories = ['All', ...Array.from(new Set(menuItems.map(item => item.category)))];
@@ -49,9 +51,13 @@ const CustomerPage = () => {
       setCartItems([...cartItems, newItem]);
     }
     
+    const message = menuType === 'buffet' 
+      ? `${item.name} đã được chọn.`
+      : `${item.name} đã thêm vào giỏ hàng.`;
+      
     toast({
-      title: "Added to Order",
-      description: `${item.name} added to your order.`,
+      title: menuType === 'buffet' ? "Đã chọn món" : "Đã thêm vào giỏ hàng",
+      description: message,
       duration: 2000
     });
   };
@@ -75,7 +81,9 @@ const CustomerPage = () => {
   const submitOrder = () => {
     if (cartItems.length === 0) return;
     
-    const totalPrice = cartItems.reduce((sum, item) => sum + (item.menuItem.price * item.quantity), 0);
+    const totalPrice = menuType === 'buffet' 
+      ? 299000 * tableNumber // Example buffet price per person
+      : cartItems.reduce((sum, item) => sum + (item.menuItem.price * item.quantity), 0);
     
     const newOrder: Order = {
       id: uuidv4(),
@@ -91,8 +99,8 @@ const CustomerPage = () => {
     setCartItems([]);
     
     toast({
-      title: "Order Placed!",
-      description: `Your order #${newOrder.id.slice(0, 8)} has been placed successfully.`,
+      title: "Đã đặt món!",
+      description: `Đơn hàng #${newOrder.id.slice(0, 8)} đã được đặt thành công.`,
       variant: "default"
     });
   };
@@ -137,6 +145,31 @@ const CustomerPage = () => {
           </TabsList>
           
           <TabsContent value="menu">
+            <Card className="mb-4">
+              <CardContent className="pt-6">
+                <div className="text-lg font-medium mb-2">Lựa chọn kiểu gọi món:</div>
+                <RadioGroup 
+                  defaultValue="a-la-carte" 
+                  value={menuType}
+                  onValueChange={(value) => setMenuType(value as 'a-la-carte' | 'buffet')}
+                  className="flex space-x-4"
+                >
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="a-la-carte" id="a-la-carte" />
+                    <label htmlFor="a-la-carte" className="cursor-pointer">
+                      Gọi món (À la carte)
+                    </label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="buffet" id="buffet" />
+                    <label htmlFor="buffet" className="cursor-pointer">
+                      Buffet Manwah (299.000₫/người)
+                    </label>
+                  </div>
+                </RadioGroup>
+              </CardContent>
+            </Card>
+            
             <ScrollArea className="h-12 whitespace-nowrap pb-2 mb-6">
               <div className="flex space-x-2">
                 {categories.map(category => (
@@ -160,6 +193,7 @@ const CustomerPage = () => {
                     key={item.id}
                     item={item}
                     onAddToOrder={addToOrder}
+                    menuType={menuType}
                   />
                 ))
               }
