@@ -1,4 +1,3 @@
-
 // Types for the restaurant order management system
 
 export type OrderStatus = 'pending' | 'cooking' | 'ready' | 'served' | 'paid';
@@ -14,6 +13,7 @@ export interface MenuItem {
   image?: string;
   available: boolean;
   status?: ItemStatus; // for kitchen view
+  notes?: string;     // Added notes property to MenuItem interface
 }
 
 export interface OrderItem {
