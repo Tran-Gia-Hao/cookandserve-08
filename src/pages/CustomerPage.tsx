@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -7,7 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from 'react-router-dom';
-import { HomeIcon, MenuIcon, History, ArrowLeft } from 'lucide-react';
+import { HomeIcon, MenuIcon, History, ArrowLeft, Minus, Plus } from 'lucide-react';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import MenuItemCard from '@/components/MenuItemCard';
 import OrderCart from '@/components/OrderCart';
