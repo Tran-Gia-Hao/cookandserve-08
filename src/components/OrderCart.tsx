@@ -60,6 +60,17 @@ const OrderCart: React.FC<OrderCartProps> = ({
     onSubmitOrder();
   };
 
+  // Check if order can be submitted - modified to enable buffet orders properly
+  const canSubmitOrder = () => {
+    if (tableNumber <= 0) return false;
+    
+    if (menuType === 'buffet') {
+      return buffetItem !== undefined;
+    } else {
+      return items.length > 0;
+    }
+  };
+
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -253,7 +264,7 @@ const OrderCart: React.FC<OrderCartProps> = ({
               <Button 
                 className="w-full button-primary py-6 text-base"
                 onClick={handleSubmitOrder}
-                disabled={tableNumber <= 0}
+                disabled={!canSubmitOrder()}
               >
                 <Send className="mr-2 h-5 w-5" />
                 Đặt món
