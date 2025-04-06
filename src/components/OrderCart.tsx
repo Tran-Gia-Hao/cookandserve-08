@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
@@ -36,14 +35,12 @@ const OrderCart: React.FC<OrderCartProps> = ({
   onPeopleCountChange
 }) => {
   const totalItems = items.reduce((sum, item) => {
-    // Don't count buffet package in total items
     if (item.menuItem.category === 'Buffet Package') return sum;
     return sum + item.quantity;
   }, 0);
   
   const buffetItem = items.find(item => item.menuItem.category === 'Buffet Package');
   
-  // Calculate total price based on menu type
   let totalPrice = 0;
   if (menuType === 'buffet' && buffetItem) {
     totalPrice = buffetItem.menuItem.price * (peopleCount || 1);
@@ -52,15 +49,9 @@ const OrderCart: React.FC<OrderCartProps> = ({
   }
 
   const handleSubmitOrder = () => {
-    if ((menuType === 'a-la-carte' && items.length === 0) || tableNumber <= 0) return;
-    
-    // For buffet, we need at least the buffet package
-    if (menuType === 'buffet' && !buffetItem) return;
-    
     onSubmitOrder();
   };
 
-  // Check if order can be submitted - modified to enable buffet orders properly
   const canSubmitOrder = () => {
     if (tableNumber <= 0) return false;
     
@@ -161,10 +152,8 @@ const OrderCart: React.FC<OrderCartProps> = ({
         
         <Separator className="my-6" />
         
-        {/* Show different content based on menu type */}
         {menuType === 'buffet' && buffetItem ? (
           <>
-            {/* Display buffet package info */}
             <div className="mb-4 p-4 bg-amber-50 border border-amber-200 rounded-md">
               <div className="font-semibold text-lg">{buffetItem.menuItem.name}</div>
               <div className="text-sm text-gray-700 mt-1">{buffetItem.menuItem.description}</div>
@@ -262,7 +251,7 @@ const OrderCart: React.FC<OrderCartProps> = ({
               </div>
               
               <Button 
-                className="w-full button-primary py-6 text-base"
+                className="w-full py-6 text-base bg-amber-600 text-white hover:bg-amber-700"
                 onClick={handleSubmitOrder}
                 disabled={!canSubmitOrder()}
               >
@@ -272,7 +261,6 @@ const OrderCart: React.FC<OrderCartProps> = ({
             </div>
           </>
         ) : menuType === 'a-la-carte' || !buffetItem ? (
-          // Regular a-la-carte cart view
           <>
             {items.length === 0 ? (
               <div className="py-8 text-center text-gray-500">
@@ -359,9 +347,9 @@ const OrderCart: React.FC<OrderCartProps> = ({
                   </div>
                   
                   <Button 
-                    className="w-full button-primary py-6 text-base"
+                    className="w-full py-6 text-base bg-amber-600 text-white hover:bg-amber-700"
                     onClick={handleSubmitOrder}
-                    disabled={items.length === 0 || tableNumber <= 0}
+                    disabled={!canSubmitOrder()}
                   >
                     <Send className="mr-2 h-5 w-5" />
                     Place Order
