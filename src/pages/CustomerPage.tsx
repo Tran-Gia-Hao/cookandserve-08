@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -17,7 +16,6 @@ import { menuItems } from '@/data/mockData';
 import { MenuItem, Order, OrderItem } from '@/models/types';
 import { v4 as uuidv4 } from 'uuid';
 
-// Define the buffet package options
 const buffetPackages: MenuItem[] = [
   {
     id: 'buffet-1',
@@ -75,24 +73,18 @@ const CustomerPage = () => {
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const [menuType, setMenuType] = useState<'a-la-carte' | 'buffet'>('a-la-carte');
   const [selectedBuffet, setSelectedBuffet] = useState<string>('');
-  const [peopleCount, setPeopleCount] = useState(1); // Add people count for buffet orders
+  const [peopleCount, setPeopleCount] = useState(1);
   const { toast } = useToast();
 
-  // Combine regular menu items and buffet packages for display
   const allMenuItems = [...menuItems, ...(menuType === 'buffet' ? [] : buffetPackages)];
   
   const categories = ['All', ...Array.from(new Set(allMenuItems.map(item => item.category)))];
 
   const addToOrder = (item: MenuItem) => {
     if (item.category === 'Buffet Package') {
-      // If selecting a buffet package
       setSelectedBuffet(item.name);
       setMenuType('buffet');
-      
-      // Clear cart when changing buffet package
       setCartItems([]);
-      
-      // Add selected buffet as a special item to cart for tracking
       const buffetItem: OrderItem = {
         id: uuidv4(),
         menuItemId: item.id,
@@ -100,14 +92,12 @@ const CustomerPage = () => {
           ...item,
           notes: `Buffet Package: ${peopleCount} người`
         },
-        quantity: 1, // Always 1 for buffet package
+        quantity: 1,
         status: 'pending',
         createdAt: new Date(),
         updatedAt: new Date()
       };
-      
       setCartItems([buffetItem]);
-      
       toast({
         title: "Gói buffet đã chọn",
         description: `Bạn đã chọn ${item.name} với giá ${item.price.toLocaleString('vi-VN')}₫/người.`,
@@ -117,7 +107,6 @@ const CustomerPage = () => {
     }
     
     if (menuType === 'buffet' && item.category !== 'Buffet Package') {
-      // For buffet, add items without affecting the price
       const existingItem = cartItems.find(cartItem => 
         cartItem.menuItemId === item.id && 
         cartItem.menuItem.category !== 'Buffet Package'
@@ -140,10 +129,8 @@ const CustomerPage = () => {
           updatedAt: new Date()
         };
         
-        // Find the buffet package item
         const buffetItem = cartItems.find(item => item.menuItem.category === 'Buffet Package');
         
-        // Add new item while keeping the buffet package
         if (buffetItem) {
           setCartItems([buffetItem, ...cartItems.filter(item => item.menuItem.category !== 'Buffet Package'), newItem]);
         } else {
@@ -151,7 +138,6 @@ const CustomerPage = () => {
         }
       }
     } else {
-      // For à-la-carte, normal behavior
       const existingItem = cartItems.find(cartItem => cartItem.menuItemId === item.id);
       
       if (existingItem) {
@@ -186,7 +172,6 @@ const CustomerPage = () => {
   };
 
   const removeFromOrder = (itemId: string) => {
-    // Don't remove buffet package from cart when in buffet mode
     const item = cartItems.find(item => item.id === itemId);
     if (menuType === 'buffet' && item?.menuItem.category === 'Buffet Package') {
       toast({
@@ -201,7 +186,6 @@ const CustomerPage = () => {
   };
 
   const updateQuantity = (itemId: string, quantity: number) => {
-    // Don't allow changing quantity of buffet package
     const item = cartItems.find(item => item.id === itemId);
     if (menuType === 'buffet' && item?.menuItem.category === 'Buffet Package') {
       return;
@@ -219,7 +203,6 @@ const CustomerPage = () => {
   };
 
   const submitOrder = () => {
-    // For buffet, require at least the package to be selected
     const hasBuffetPackage = menuType === 'buffet' && cartItems.some(item => item.menuItem.category === 'Buffet Package');
     
     if (menuType === 'buffet' && !hasBuffetPackage) {
@@ -240,24 +223,20 @@ const CustomerPage = () => {
       return;
     }
     
-    // Calculate price based on menu type
     let totalPrice = 0;
     
     if (menuType === 'buffet') {
-      // Find the selected buffet package price
       const selectedPackage = buffetPackages.find(pkg => pkg.name === selectedBuffet);
       if (selectedPackage) {
-        totalPrice = selectedPackage.price * peopleCount; // Price per person * number of people
+        totalPrice = selectedPackage.price * peopleCount;
       }
       
-      // Update buffet package note with people count
       setCartItems(items => items.map(item => 
         item.menuItem.category === 'Buffet Package' 
           ? { ...item, menuItem: { ...item.menuItem, notes: `${peopleCount} người` }}
           : item
       ));
     } else {
-      // For à-la-carte, calculate based on cart items
       totalPrice = cartItems.reduce((sum, item) => sum + (item.menuItem.price * item.quantity), 0);
     }
     
@@ -273,7 +252,6 @@ const CustomerPage = () => {
     
     setOrderHistory([newOrder, ...orderHistory]);
     
-    // Reset cart but keep buffet selection if in buffet mode
     if (menuType === 'buffet') {
       const buffetItem = cartItems.find(item => item.menuItem.category === 'Buffet Package');
       if (buffetItem) {
@@ -302,18 +280,15 @@ const CustomerPage = () => {
     setSelectedOrder(null);
   };
 
-  // Handle menu type change
   const handleMenuTypeChange = (value: 'a-la-carte' | 'buffet') => {
     setMenuType(value);
     if (value === 'a-la-carte') {
       setSelectedBuffet('');
       setCartItems([]);
     }
-    // If switching to buffet but no package selected, default to first package
     else if (value === 'buffet' && !selectedBuffet) {
       setSelectedBuffet(buffetPackages[0].name);
       
-      // Add selected buffet as a special item to cart for tracking
       const buffetItem: OrderItem = {
         id: uuidv4(),
         menuItemId: buffetPackages[0].id,
@@ -331,16 +306,20 @@ const CustomerPage = () => {
     }
   };
 
-  // Handle people count change for buffet
   const handlePeopleCountChange = (count: number) => {
     setPeopleCount(Math.max(1, count));
     
-    // Update buffet item in cart if it exists
     const buffetItem = cartItems.find(item => item.menuItem.category === 'Buffet Package');
     if (buffetItem) {
       setCartItems(items => items.map(item => 
         item.menuItem.category === 'Buffet Package' 
-          ? { ...item, menuItem: { ...item.menuItem, notes: `${count} người` }}
+          ? { 
+              ...item, 
+              menuItem: { 
+                ...item.menuItem, 
+                notes: `${count} người` 
+              }
+            }
           : item
       ));
     }
@@ -357,7 +336,7 @@ const CustomerPage = () => {
               </Button>
             </Link>
             <h1 className="text-xl font-bold text-restaurant-secondary">Cook & Serve</h1>
-            <div className="w-9"></div> {/* Placeholder for balance */}
+            <div className="w-9"></div>
           </div>
         </div>
       </header>
@@ -376,7 +355,6 @@ const CustomerPage = () => {
           </TabsList>
           
           <TabsContent value="menu">
-            {/* Menu Type Selection */}
             <Card className="mb-4">
               <CardContent className="pt-6">
                 <div className="text-lg font-medium mb-2">Lựa chọn kiểu gọi món:</div>
@@ -401,85 +379,78 @@ const CustomerPage = () => {
               </CardContent>
             </Card>
             
-            {/* Buffet Package Selection */}
-            {menuType === 'buffet' && (
-              <div className="mb-6">
-                <h2 className="text-lg font-semibold mb-3">Chọn gói Buffet:</h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                  {buffetPackages.map(pkg => (
-                    <MenuItemCard
-                      key={pkg.id}
-                      item={pkg}
-                      onAddToOrder={addToOrder}
-                      menuType={menuType}
-                      buffetOption={selectedBuffet}
-                    />
-                  ))}
-                </div>
-                
-                {selectedBuffet && (
-                  <div className="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-md">
-                    <p className="text-amber-800">
-                      <span className="font-bold">Gói đã chọn:</span> {selectedBuffet}
-                    </p>
-                    <div className="flex items-center mt-2">
-                      <span className="text-sm text-gray-700 mr-3">Số người:</span>
-                      <div className="flex items-center border border-gray-300 rounded-md">
-                        <Button 
-                          variant="ghost" 
-                          size="sm"
-                          className="h-8 px-3 text-gray-700 hover:bg-gray-100 rounded-none rounded-l-md"
-                          onClick={() => handlePeopleCountChange(peopleCount - 1)}
-                        >
-                          <Minus className="h-4 w-4" />
-                        </Button>
-                        <span className="px-3 h-8 flex items-center justify-center border-x border-gray-300 min-w-[40px]">
-                          {peopleCount}
-                        </span>
-                        <Button 
-                          variant="ghost" 
-                          size="sm"
-                          className="h-8 px-3 text-gray-700 hover:bg-gray-100 rounded-none rounded-r-md"
-                          onClick={() => handlePeopleCountChange(peopleCount + 1)}
-                        >
-                          <Plus className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </div>
-                    <p className="text-sm text-gray-600 mt-3">
-                      Hãy chọn những món bạn muốn từ menu bên dưới.
-                    </p>
-                  </div>
-                )}
-                
-                <Separator className="my-6" />
+            <div className="mb-6">
+              <h2 className="text-lg font-semibold mb-3">Chọn gói Buffet:</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                {buffetPackages.map(pkg => (
+                  <MenuItemCard
+                    key={pkg.id}
+                    item={pkg}
+                    onAddToOrder={addToOrder}
+                    menuType={menuType}
+                    buffetOption={selectedBuffet}
+                  />
+                ))}
               </div>
-            )}
+              
+              {selectedBuffet && (
+                <div className="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-md">
+                  <p className="text-amber-800">
+                    <span className="font-bold">Gói đã chọn:</span> {selectedBuffet}
+                  </p>
+                  <div className="flex items-center mt-2">
+                    <span className="text-sm text-gray-700 mr-3">Số người:</span>
+                    <div className="flex items-center border border-gray-300 rounded-md">
+                      <Button 
+                        variant="ghost" 
+                        size="sm"
+                        className="h-8 px-3 text-gray-700 hover:bg-gray-100 rounded-none rounded-l-md"
+                        onClick={() => handlePeopleCountChange(peopleCount - 1)}
+                      >
+                        <Minus className="h-4 w-4" />
+                      </Button>
+                      <span className="px-3 h-8 flex items-center justify-center border-x border-gray-300 min-w-[40px]">
+                        {peopleCount}
+                      </span>
+                      <Button 
+                        variant="ghost" 
+                        size="sm"
+                        className="h-8 px-3 text-gray-700 hover:bg-gray-100 rounded-none rounded-r-md"
+                        onClick={() => handlePeopleCountChange(peopleCount + 1)}
+                      >
+                        <Plus className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                  <p className="text-sm text-gray-600 mt-3">
+                    Hãy chọn những món bạn muốn từ menu bên dưới.
+                  </p>
+                </div>
+              )}
+              
+              <Separator className="my-6" />
+            </div>
             
-            {/* Regular Menu Categories */}
             <ScrollArea className="h-12 whitespace-nowrap pb-2 mb-6">
               <div className="flex space-x-2">
                 {categories
-                  // Hide Buffet Package category from categories list
                   .filter(cat => cat !== 'Buffet Package')
                   .map(category => (
-                  <Button
-                    key={category}
-                    variant={activeCategory === category ? "default" : "outline"}
-                    onClick={() => setActiveCategory(category)}
-                    className={activeCategory === category ? "button-primary" : ""}
-                  >
-                    {category}
-                  </Button>
-                ))}
+                    <Button
+                      key={category}
+                      variant={activeCategory === category ? "default" : "outline"}
+                      onClick={() => setActiveCategory(category)}
+                      className={activeCategory === category ? "button-primary" : ""}
+                    >
+                      {category}
+                    </Button>
+                  ))}
               </div>
             </ScrollArea>
             
-            {/* Menu Items Display */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 pb-20">
               {allMenuItems
                 .filter(item => 
-                  // Don't show buffet packages in regular menu
                   item.category !== 'Buffet Package' && 
                   (activeCategory === 'All' || item.category === activeCategory)
                 )

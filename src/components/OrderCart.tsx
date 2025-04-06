@@ -159,7 +159,7 @@ const OrderCart: React.FC<OrderCartProps> = ({
               <div className="text-sm text-gray-700 mt-1">{buffetItem.menuItem.description}</div>
               <div className="mt-2 flex justify-between text-amber-800">
                 <span>{peopleCount} người x {buffetItem.menuItem.price.toLocaleString('vi-VN')}₫</span>
-                <span className="font-bold">{totalPrice.toLocaleString('vi-VN')}₫</span>
+                <span className="font-bold">{(buffetItem.menuItem.price * peopleCount).toLocaleString('vi-VN')}₫</span>
               </div>
             </div>
             
