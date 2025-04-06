@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
@@ -47,10 +48,6 @@ const OrderCart: React.FC<OrderCartProps> = ({
   } else {
     totalPrice = items.reduce((sum, item) => sum + (item.menuItem.price * item.quantity), 0);
   }
-
-  const handleSubmitOrder = () => {
-    onSubmitOrder();
-  };
 
   const canSubmitOrder = () => {
     if (tableNumber <= 0) return false;
@@ -251,8 +248,9 @@ const OrderCart: React.FC<OrderCartProps> = ({
               </div>
               
               <Button 
-                className="w-full py-6 text-base bg-amber-600 text-white hover:bg-amber-700"
-                onClick={handleSubmitOrder}
+                variant="primary"
+                className="w-full py-6 text-base"
+                onClick={() => onSubmitOrder()}
                 disabled={!canSubmitOrder()}
               >
                 <Send className="mr-2 h-5 w-5" />
@@ -347,8 +345,9 @@ const OrderCart: React.FC<OrderCartProps> = ({
                   </div>
                   
                   <Button 
-                    className="w-full py-6 text-base bg-amber-600 text-white hover:bg-amber-700"
-                    onClick={handleSubmitOrder}
+                    variant="primary"
+                    className="w-full py-6 text-base"
+                    onClick={() => onSubmitOrder()}
                     disabled={!canSubmitOrder()}
                   >
                     <Send className="mr-2 h-5 w-5" />
