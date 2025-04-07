@@ -49,15 +49,13 @@ const OrderCart: React.FC<OrderCartProps> = ({
   }
 
   const canSubmitOrder = () => {
-    // Must have a table number
     if (!tableNumber || tableNumber <= 0) return false;
     
-    // For buffet, just need a buffet package
     if (menuType === 'buffet') {
-      return buffetItem !== undefined;
+      const buffetPackage = items.find(item => item.menuItem.category === 'Buffet Package');
+      return buffetPackage !== undefined && peopleCount && peopleCount > 0;
     }
     
-    // For à la carte, need at least one item
     return items.length > 0;
   };
 
