@@ -50,13 +50,16 @@ const OrderCart: React.FC<OrderCartProps> = ({
   }
 
   const canSubmitOrder = () => {
+    // Nếu không có số bàn, không cho đặt món
     if (tableNumber <= 0) return false;
     
+    // Nếu là buffet, yêu cầu phải có buffet package
     if (menuType === 'buffet') {
       return buffetItem !== undefined;
-    } else {
-      return items.length > 0;
     }
+    
+    // Nếu là à la carte, yêu cầu có ít nhất một món
+    return items.length > 0;
   };
 
   return (
@@ -248,9 +251,9 @@ const OrderCart: React.FC<OrderCartProps> = ({
               </div>
               
               <Button 
-                variant="primary"
+                variant="primary" 
                 className="w-full py-6 text-base"
-                onClick={() => onSubmitOrder()}
+                onClick={onSubmitOrder}
                 disabled={!canSubmitOrder()}
               >
                 <Send className="mr-2 h-5 w-5" />
@@ -347,7 +350,7 @@ const OrderCart: React.FC<OrderCartProps> = ({
                   <Button 
                     variant="primary"
                     className="w-full py-6 text-base"
-                    onClick={() => onSubmitOrder()}
+                    onClick={onSubmitOrder}
                     disabled={!canSubmitOrder()}
                   >
                     <Send className="mr-2 h-5 w-5" />
