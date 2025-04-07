@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
@@ -64,7 +65,7 @@ const OrderCart: React.FC<OrderCartProps> = ({
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button className="fixed bottom-6 right-6 h-16 w-16 rounded-full shadow-lg button-primary">
+        <Button className="fixed bottom-6 right-6 h-16 w-16 rounded-full shadow-lg" variant="primary">
           <ShoppingCart className="h-6 w-6" />
           {(totalItems > 0 || buffetItem) && (
             <Badge className="absolute -top-2 -right-2 bg-restaurant-secondary">
