@@ -50,15 +50,15 @@ const OrderCart: React.FC<OrderCartProps> = ({
   }
 
   const canSubmitOrder = () => {
-    // Cần có số bàn để đặt món
+    // Must have a table number
     if (!tableNumber || tableNumber <= 0) return false;
     
-    // Đối với buffet, chỉ cần có gói buffet
+    // For buffet, just need a buffet package
     if (menuType === 'buffet') {
       return buffetItem !== undefined;
     }
     
-    // Đối với à la carte, cần có ít nhất một món
+    // For à la carte, need at least one item
     return items.length > 0;
   };
 
