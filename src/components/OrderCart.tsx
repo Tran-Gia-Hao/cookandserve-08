@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
@@ -262,7 +261,7 @@ const OrderCart: React.FC<OrderCartProps> = ({
             </div>
           </>
         ) : menuType === 'a-la-carte' || !buffetItem ? (
-          <>
+          <div>
             {items.length === 0 ? (
               <div className="py-8 text-center text-gray-500">
                 Your cart is empty. Add some items to get started.
@@ -359,7 +358,7 @@ const OrderCart: React.FC<OrderCartProps> = ({
                 </div>
               </>
             )}
-          </>
+          </div>
         ) : (
           <div className="py-8 text-center text-gray-500">
             Please select a buffet package first.
