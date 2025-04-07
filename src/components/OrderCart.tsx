@@ -50,11 +50,11 @@ const OrderCart: React.FC<OrderCartProps> = ({
   }
 
   const canSubmitOrder = () => {
-    // Nếu không có số bàn, không cho đặt món
-    if (tableNumber <= 0) return false;
+    // Cần có số bàn để đặt món
+    if (!tableNumber || tableNumber <= 0) return false;
     
+    // Đối với buffet, chỉ cần có gói buffet
     if (menuType === 'buffet') {
-      // Đối với buffet, chỉ cần có gói buffet là đủ điều kiện đặt món
       return buffetItem !== undefined;
     }
     
