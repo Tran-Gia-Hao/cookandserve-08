@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
@@ -53,12 +52,12 @@ const OrderCart: React.FC<OrderCartProps> = ({
     // Nếu không có số bàn, không cho đặt món
     if (tableNumber <= 0) return false;
     
-    // Nếu là buffet, yêu cầu phải có buffet package
     if (menuType === 'buffet') {
+      // Đối với buffet, chỉ cần có gói buffet là đủ điều kiện đặt món
       return buffetItem !== undefined;
     }
     
-    // Nếu là à la carte, yêu cầu có ít nhất một món
+    // Đối với à la carte, cần có ít nhất một món
     return items.length > 0;
   };
 
