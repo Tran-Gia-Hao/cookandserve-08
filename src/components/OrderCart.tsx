@@ -250,7 +250,7 @@ const OrderCart: React.FC<OrderCartProps> = ({
                 variant="primary" 
                 className="w-full py-6 text-base"
                 onClick={onSubmitOrder}
-                disabled={!canSubmitOrder()}
+                disabled={!tableNumber || tableNumber <= 0 || !peopleCount || peopleCount <= 0}
               >
                 <Send className="mr-2 h-5 w-5" />
                 Đặt món
