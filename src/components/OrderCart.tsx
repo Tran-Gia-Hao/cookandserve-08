@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
@@ -52,8 +53,7 @@ const OrderCart: React.FC<OrderCartProps> = ({
     if (!tableNumber || tableNumber <= 0) return false;
     
     if (menuType === 'buffet') {
-      const buffetPackage = items.find(item => item.menuItem.category === 'Buffet Package');
-      return buffetPackage !== undefined && peopleCount && peopleCount > 0;
+      return !!buffetItem && peopleCount && peopleCount > 0;
     }
     
     return items.length > 0;
@@ -358,8 +358,20 @@ const OrderCart: React.FC<OrderCartProps> = ({
             )}
           </div>
         ) : (
-          <div className="py-8 text-center text-gray-500">
-            Please select a buffet package first.
+          <div className="py-8 text-center text-gray-500 flex flex-col">
+            <p>Please select a buffet package first.</p>
+            
+            <div className="mt-6">
+              <Button 
+                variant="primary"
+                className="w-full py-6 text-base"
+                onClick={onSubmitOrder}
+                disabled={!canSubmitOrder()}
+              >
+                <Send className="mr-2 h-5 w-5" />
+                Đặt món
+              </Button>
+            </div>
           </div>
         )}
       </SheetContent>
