@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -76,9 +77,11 @@ const CustomerPage = () => {
   const [peopleCount, setPeopleCount] = useState(1);
   const { toast } = useToast();
 
-  const allMenuItems = [...menuItems, ...(menuType === 'buffet' ? [] : buffetPackages)];
+  // Only include regular menu items for a-la-carte
+  const regularMenuItems = menuItems.filter(item => item.category !== 'Buffet Package');
   
-  const categories = ['All', ...Array.from(new Set(allMenuItems.map(item => item.category)))];
+  // Get categories excluding buffet packages
+  const categories = ['All', ...Array.from(new Set(regularMenuItems.map(item => item.category)))];
 
   const addToOrder = (item: MenuItem) => {
     if (item.category === 'Buffet Package') {
@@ -285,6 +288,7 @@ const CustomerPage = () => {
     if (value === 'a-la-carte') {
       setSelectedBuffet('');
       setCartItems([]);
+      setActiveCategory('All');
     }
     else if (value === 'buffet' && !selectedBuffet) {
       setSelectedBuffet(buffetPackages[0].name);
@@ -379,92 +383,122 @@ const CustomerPage = () => {
               </CardContent>
             </Card>
             
-            <div className="mb-6">
-              <h2 className="text-lg font-semibold mb-3">Chọn gói Buffet:</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                {buffetPackages.map(pkg => (
-                  <MenuItemCard
-                    key={pkg.id}
-                    item={pkg}
-                    onAddToOrder={addToOrder}
-                    menuType={menuType}
-                    buffetOption={selectedBuffet}
-                  />
-                ))}
-              </div>
-              
-              {selectedBuffet && (
-                <div className="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-md">
-                  <p className="text-amber-800">
-                    <span className="font-bold">Gói đã chọn:</span> {selectedBuffet}
-                  </p>
-                  <div className="flex items-center mt-2">
-                    <span className="text-sm text-gray-700 mr-3">Số người:</span>
-                    <div className="flex items-center border border-gray-300 rounded-md">
-                      <Button 
-                        variant="ghost" 
-                        size="sm"
-                        className="h-8 px-3 text-gray-700 hover:bg-gray-100 rounded-none rounded-l-md"
-                        onClick={() => handlePeopleCountChange(peopleCount - 1)}
-                      >
-                        <Minus className="h-4 w-4" />
-                      </Button>
-                      <span className="px-3 h-8 flex items-center justify-center border-x border-gray-300 min-w-[40px]">
-                        {peopleCount}
-                      </span>
-                      <Button 
-                        variant="ghost" 
-                        size="sm"
-                        className="h-8 px-3 text-gray-700 hover:bg-gray-100 rounded-none rounded-r-md"
-                        onClick={() => handlePeopleCountChange(peopleCount + 1)}
-                      >
-                        <Plus className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                  <p className="text-sm text-gray-600 mt-3">
-                    Hãy chọn những món bạn muốn từ menu bên dưới.
-                  </p>
-                </div>
-              )}
-              
-              <Separator className="my-6" />
-            </div>
-            
-            <ScrollArea className="h-12 whitespace-nowrap pb-2 mb-6">
-              <div className="flex space-x-2">
-                {categories
-                  .filter(cat => cat !== 'Buffet Package')
-                  .map(category => (
-                    <Button
-                      key={category}
-                      variant={activeCategory === category ? "default" : "outline"}
-                      onClick={() => setActiveCategory(category)}
-                      className={activeCategory === category ? "button-primary" : ""}
-                    >
-                      {category}
-                    </Button>
+            {/* Conditionally show content based on menu type */}
+            {menuType === 'buffet' ? (
+              <div className="mb-6">
+                <h2 className="text-lg font-semibold mb-3">Chọn gói Buffet:</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                  {buffetPackages.map(pkg => (
+                    <MenuItemCard
+                      key={pkg.id}
+                      item={pkg}
+                      onAddToOrder={addToOrder}
+                      menuType={menuType}
+                      buffetOption={selectedBuffet}
+                    />
                   ))}
+                </div>
+                
+                {selectedBuffet && (
+                  <div className="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-md">
+                    <p className="text-amber-800">
+                      <span className="font-bold">Gói đã chọn:</span> {selectedBuffet}
+                    </p>
+                    <div className="flex items-center mt-2">
+                      <span className="text-sm text-gray-700 mr-3">Số người:</span>
+                      <div className="flex items-center border border-gray-300 rounded-md">
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          className="h-8 px-3 text-gray-700 hover:bg-gray-100 rounded-none rounded-l-md"
+                          onClick={() => handlePeopleCountChange(peopleCount - 1)}
+                        >
+                          <Minus className="h-4 w-4" />
+                        </Button>
+                        <span className="px-3 h-8 flex items-center justify-center border-x border-gray-300 min-w-[40px]">
+                          {peopleCount}
+                        </span>
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          className="h-8 px-3 text-gray-700 hover:bg-gray-100 rounded-none rounded-r-md"
+                          onClick={() => handlePeopleCountChange(peopleCount + 1)}
+                        >
+                          <Plus className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                    <p className="text-sm text-gray-600 mt-3">
+                      Hãy chọn những món bạn muốn từ menu bên dưới.
+                    </p>
+                  </div>
+                )}
+                
+                <Separator className="my-6" />
+                
+                <ScrollArea className="h-12 whitespace-nowrap pb-2 mb-6">
+                  <div className="flex space-x-2">
+                    {categories.map(category => (
+                      <Button
+                        key={category}
+                        variant={activeCategory === category ? "default" : "outline"}
+                        onClick={() => setActiveCategory(category)}
+                        className={activeCategory === category ? "button-primary" : ""}
+                      >
+                        {category}
+                      </Button>
+                    ))}
+                  </div>
+                </ScrollArea>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 pb-20">
+                  {regularMenuItems
+                    .filter(item => activeCategory === 'All' || item.category === activeCategory)
+                    .map(item => (
+                      <MenuItemCard
+                        key={item.id}
+                        item={item}
+                        onAddToOrder={addToOrder}
+                        menuType={menuType}
+                        buffetOption={selectedBuffet}
+                      />
+                    ))
+                  }
+                </div>
               </div>
-            </ScrollArea>
-            
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 pb-20">
-              {allMenuItems
-                .filter(item => 
-                  item.category !== 'Buffet Package' && 
-                  (activeCategory === 'All' || item.category === activeCategory)
-                )
-                .map(item => (
-                  <MenuItemCard
-                    key={item.id}
-                    item={item}
-                    onAddToOrder={addToOrder}
-                    menuType={menuType}
-                    buffetOption={selectedBuffet}
-                  />
-                ))
-              }
-            </div>
+            ) : (
+              /* À la carte menu view */
+              <div className="mb-6">
+                <ScrollArea className="h-12 whitespace-nowrap pb-2 mb-6">
+                  <div className="flex space-x-2">
+                    {categories.map(category => (
+                      <Button
+                        key={category}
+                        variant={activeCategory === category ? "default" : "outline"}
+                        onClick={() => setActiveCategory(category)}
+                        className={activeCategory === category ? "button-primary" : ""}
+                      >
+                        {category}
+                      </Button>
+                    ))}
+                  </div>
+                </ScrollArea>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 pb-20">
+                  {regularMenuItems
+                    .filter(item => activeCategory === 'All' || item.category === activeCategory)
+                    .map(item => (
+                      <MenuItemCard
+                        key={item.id}
+                        item={item}
+                        onAddToOrder={addToOrder}
+                        menuType={menuType}
+                      />
+                    ))
+                  }
+                </div>
+              </div>
+            )}
           </TabsContent>
           
           <TabsContent value="orders">
