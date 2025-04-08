@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
@@ -366,7 +365,7 @@ const OrderCart: React.FC<OrderCartProps> = ({
                 variant="primary"
                 className="w-full py-6 text-base"
                 onClick={onSubmitOrder}
-                disabled={!canSubmitOrder()}
+                disabled={true}
               >
                 <Send className="mr-2 h-5 w-5" />
                 Đặt món
