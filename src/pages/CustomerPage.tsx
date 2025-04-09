@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -77,10 +76,8 @@ const CustomerPage = () => {
   const [peopleCount, setPeopleCount] = useState(1);
   const { toast } = useToast();
 
-  // Only include regular menu items for a-la-carte
   const regularMenuItems = menuItems.filter(item => item.category !== 'Buffet Package');
   
-  // Get categories excluding buffet packages
   const categories = ['All', ...Array.from(new Set(regularMenuItems.map(item => item.category)))];
 
   const addToOrder = (item: MenuItem) => {
@@ -383,7 +380,6 @@ const CustomerPage = () => {
               </CardContent>
             </Card>
             
-            {/* Conditionally show content based on menu type */}
             {menuType === 'buffet' ? (
               <div className="mb-6">
                 <h2 className="text-lg font-semibold mb-3">Chọn gói Buffet:</h2>
@@ -429,7 +425,7 @@ const CustomerPage = () => {
                       </div>
                     </div>
                     <p className="text-sm text-gray-600 mt-3">
-                      Hãy chọn những món bạn muốn từ menu bên dưới.
+                      Hãy chọn những món bạn muốn t��� menu bên dưới.
                     </p>
                   </div>
                 )}
@@ -467,7 +463,6 @@ const CustomerPage = () => {
                 </div>
               </div>
             ) : (
-              /* À la carte menu view */
               <div className="mb-6">
                 <ScrollArea className="h-12 whitespace-nowrap pb-2 mb-6">
                   <div className="flex space-x-2">
