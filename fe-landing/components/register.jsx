@@ -1,3 +1,4 @@
+
 import { swtoast } from '@/mixins/swal.mixin';
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Button } from 'antd';
@@ -7,10 +8,8 @@ import { object, ref, string } from 'yup';
 
 import InputField from '@/components/inputField';
 import customerService from '@/services/customerService';
-import useCustomerStore from '@/store/customerStore';
 
 const Register = (props) => {
-    const setCustomerLogin = useCustomerStore((state) => state.setCustomerLogin);
     const schema = object({
         fullName: string()
             .trim()
@@ -54,17 +53,11 @@ const Register = (props) => {
                 customer_name: values.fullName,
                 phone_number: values.phoneNumber
             }
-            const respond = await customerService.register(data);
-
-            const customerInfor = {
-                accessToken: respond?.data?.access_token,
-                accessTokenExpires: respond?.data?.access_token_expires
-            }
-            setCustomerLogin(customerInfor);
+            await customerService.register(data);
             swtoast.success({
-                text: 'Đăng ký tài khoản thành công!'
+                text: 'Đăng ký tài khoản thành công, vui lòng đăng nhập'
             });
-            props.toClose();
+            props.toLogin && props.toLogin(); // Chuyển sang form đăng nhập
         } catch (error) {
             swtoast.error({
                 text: error.response?.data?.message
