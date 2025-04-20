@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { 
   Dialog, 
@@ -11,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Order, OrderItem, OrderStatus, ItemStatus } from '@/models/types';
-import { ArrowLeft, Clock, PlusCircle, Receipt, ChefHat, UserIcon } from 'lucide-react';
+import { ArrowLeft, Clock, Plus, Minus, Receipt, ChefHat, UserIcon } from 'lucide-react';
 import MenuItemCard from './MenuItemCard';
 
 interface OrderDetailProps {
@@ -21,6 +20,8 @@ interface OrderDetailProps {
   onUpdateItemStatus?: (orderId: string, itemId: string, newStatus: ItemStatus) => void;
   onUpdateOrderStatus?: (orderId: string, newStatus: OrderStatus) => void;
   userRole: 'customer' | 'waiter' | 'kitchen' | 'manager';
+  onAddItem?: (orderId: string) => void;
+  onRemoveItem?: (orderId: string, itemId: string) => void;
 }
 
 const OrderDetail: React.FC<OrderDetailProps> = ({
@@ -29,11 +30,16 @@ const OrderDetail: React.FC<OrderDetailProps> = ({
   onClose,
   onUpdateItemStatus,
   onUpdateOrderStatus,
-  userRole
+  userRole,
+  onAddItem,
+  onRemoveItem
 }) => {
   const [activeTab, setActiveTab] = useState<'items' | 'billing'>('items');
 
   if (!order) return null;
+
+  const isAllowEditItems = 
+    (userRole === 'customer' || userRole === 'waiter') && order.status === 'pending';
 
   const getItemStatusColor = (status: ItemStatus) => {
     switch(status) {
@@ -168,8 +174,20 @@ const OrderDetail: React.FC<OrderDetailProps> = ({
 
         {activeTab === 'items' && (
           <div className="space-y-4 max-h-[60vh] overflow-y-auto">
+            <div className="flex justify-end mb-2">
+              {isAllowEditItems && onAddItem && (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="flex items-center gap-1 border-amber-400 text-amber-700"
+                  onClick={() => onAddItem(order.id)}
+                >
+                  <Plus className="h-4 w-4" /> Thêm món
+                </Button>
+              )}
+            </div>
             {order.items.map((item: OrderItem) => (
-              <div key={item.id} className="border rounded-lg p-3">
+              <div key={item.id} className="border rounded-lg p-3 relative group">
                 <div className="flex justify-between items-start">
                   <div>
                     <div className="font-semibold">{item.menuItem.name}</div>
@@ -190,6 +208,17 @@ const OrderDetail: React.FC<OrderDetailProps> = ({
                     </div>
                   </div>
                 </div>
+                {isAllowEditItems && onRemoveItem && (
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    className="absolute right-2 top-2 text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                    onClick={() => onRemoveItem(order.id, item.id)}
+                    title="Xoá món"
+                  >
+                    <Minus className="h-4 w-4" />
+                  </Button>
+                )}
                 
                 {canModifyOrder && onUpdateItemStatus && getNextItemStatus(item.status) && (
                   <div className="mt-2">
@@ -245,7 +274,6 @@ const OrderDetail: React.FC<OrderDetailProps> = ({
           <Button variant="outline" onClick={onClose}>
             <ArrowLeft className="mr-1 h-4 w-4" /> Quay lại
           </Button>
-          
           {renderActionButton()}
         </div>
       </DialogContent>
