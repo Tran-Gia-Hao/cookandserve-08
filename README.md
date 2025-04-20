@@ -1,73 +1,65 @@
-# Welcome to your Lovable project
+# NHỮNG CHỨC NĂNG CHÍNH
+- ### Trang portal
+  - Quản lý danh mục sản phẩm
+  - Quản lý màu sắc sản phẩm
+  - Quản lý size sản phẩm
+  - Quản lý sản phẩm
+  - Quản lý biến thể sản phẩm 
+  - Quản lý đơn hàng
+- ### Trang landing
+  - Tìm kiếm sản phẩm theo danh mục
+  - Xem chi tiết sản phẩm
+  - Giỏ hàng
+  - Xem lịch sử đơn hàng
+  - Xem chi tiết đơn hàng
+  - Đánh giá sản phẩm
+- ### Chung
+  - Authentication với JWT Access Token và tự động gia hạn bằng Cookie Refresh Token khi Access Token hết hạn
+  - Validate với React Hook Form
+  - Caching với Tanstack Query
 
-## Project info
+# CÔNG NGHỆ SỬ DỤNG
+- Frontend: NextJS, Zustand, Ant Design, React Hook Form, Tanstack Query, Bootstrap
+- Backend: NodeJS (ExpressJS), Sequelize
+- DBMS: MySQL
 
-**URL**: https://lovable.dev/projects/26793680-f6f5-46d9-ba63-a9312c9e3419
+# GIAO DIỆN TRANG LANDING
+## 1. Trang chủ
+![Home_Page](README/Home_Page.gif)
 
-## How can I edit this code?
+## 2. Trang danh sách sản phẩm
+![Product_Collection](README/Product_Collection.gif)
 
-There are several ways of editing your application.
+## 3. Trang chi tiết sản phẩm
+![Product_Detail](README/Product_Detail.gif)
 
-**Use Lovable**
+## 4. Trang giỏ hàng
+![Cart_Page](README/Cart_Page.gif)
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/26793680-f6f5-46d9-ba63-a9312c9e3419) and start prompting.
+## 5. Trang thông tin khách hàng
+![Info_Customer](README/Info_Customer.png)
 
-Changes made via Lovable will be committed automatically to this repo.
+## 6. Trang lịch sử đơn hàng
+![Order_List](README/Order_List.gif)
 
-**Use your preferred IDE**
+## 7. Trang chi tiết đơn hàng
+![Order_Detail](README/Order_Detail.gif)
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+# GIAO DIỆN TRANG PORTAL
+## 1. Trang quản lý danh mục
+![Category_Management](README/Category_Management.gif)
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## 2. Trang quản lý sản phẩm
+![Product_Management](README/Product_Management.gif)
 
-Follow these steps:
+## 3. Trang thêm sản phẩm
+![Create_Product](README/Create_Product.gif)
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+## 4. Trang quản lý đơn hàng
+![Order_Management](README/Order_Management.gif)
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+## 5. Trang chi tiết đơn hàng
+![Admin_Order_Detail](README/Admin_Order_Detail.png)
 
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with .
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/26793680-f6f5-46d9-ba63-a9312c9e3419) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes it is!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+# THIẾT KẾ DỮ LIỆU - SƠ ĐỒ THỰC THỂ QUAN HỆ
+![ERD](README/ERD.png)
